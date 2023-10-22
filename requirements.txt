@@ -1,4 +1,3 @@
-streamlit
-plotly
-pandas
-streamlit-calendar
+streamlit == 1.27.2
+plotly == 5.9.0 
+pandas == 2.1.1

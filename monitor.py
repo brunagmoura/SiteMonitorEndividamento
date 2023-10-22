@@ -19,11 +19,11 @@ st.sidebar.header("Qual período você deseja consultar?")
 diferentes_dividas = pd.read_csv("analise_divida_tempo.csv", encoding="UTF-8", delimiter=',', decimal='.')
 diferentes_dividas["data_base"] = pd.to_datetime(diferentes_dividas["data_base"], format='%Y-%m-%d')
 
-min_year = diferentes_dividas['data_base'].dt.year.min()
-max_year = diferentes_dividas['data_base'].dt.year.max()
+min_year = int(diferentes_dividas['data_base'].dt.year.min())
+max_year = int(diferentes_dividas['data_base'].dt.year.max())
 
-min_month = diferentes_dividas['data_base'].dt.month.min()
-max_month = diferentes_dividas['data_base'].dt.month.max()
+min_month = int(diferentes_dividas['data_base'].dt.month.min())
+max_month = int(diferentes_dividas['data_base'].dt.month.max())
 
 month_abbr = list(calendar.month_abbr) 
 
