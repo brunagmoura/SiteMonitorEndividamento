@@ -97,71 +97,46 @@ fig.update_layout(
 # Exibir o gráfico
 st.plotly_chart(fig, use_container_width=True, height=200)
 
-st.subheader("Ocupação (PF) e Setor Econômico vs Dívida vencida acima de 15 dias")
+st.subheader("Renda vs Endividamento de longo prazo")
     
-df = pd.read_csv("dicionarios_ate2018.csv", encoding="UTF-8", delimiter=',', decimal='.')
+desemprego_divida_lp = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m-%d')
+desemprego_divida_lp["data"] = pd.to_datetime(desemprego_divida_lp["data"], format='%Y-%m')
 
-df_filtrado = df[(df["data_base"] >= date1) & (df["data_base"] <= date2)].copy()
+desemprego_divida_lp_filtrado = desemprego_divida_lp[(desemprego_divida_lp["data"] >= date1) & (desemprego_divida_lp["data"] <= date2)].copy()
 
-plot_ocupacao_divida = px.line(df_filtrado, 
-              x="data_base", 
-              y="vencido_acima_de_15_dias", 
-              color="ocupacao", 
-              line_group="ocupacao", 
-              labels={"vencido_acima_de_15_dias": "Dívida vencida acima de 15 dias", "data_base": "Date"},
-              template="seaborn")
+plot_desemprego_divida_lp_filtrado = go.Figure()
 
-plot_ocupacao_divida.update_layout(
-    legend=dict(
-        y = -0.2,
-        traceorder='normal',
-        orientation='h',
-        font=dict(
-            size=12,
-        ),
-    )
-)
+for categoria_renda in desemprego_divida_lp_filtrado['categoria_renda'].unique():
+    subset = desemprego_divida_lp_filtrado[desemprego_divida_lp_filtrado['categoria_renda'] == categoria_renda]
+    plot_desemprego_divida_lp_filtrado.add_trace(go.Scatter(x=subset['data'],
+                             y=subset['longo_prazo_deflacionado'],
+                             mode='lines',
+                             name=f'{categoria_renda}',
+                             yaxis='y2',
+                             opacity=0.7))
 
-plot_setor_divida = px.line(df_filtrado, 
-              x="data_base", 
-              y="vencido_acima_de_15_dias", 
-              color="ocupacao", 
-              line_group="ocupacao", 
-              labels={"vencido_acima_de_15_dias": "Dívida vencida acima de 15 dias", "data_base": "Date"},
-              template="seaborn")
-plot_setor_divida.update_layout(
-    legend=dict(
-        y = -0.2,
-        traceorder='normal',
-        orientation='h',
-        font=dict(
-            size=12,
-        ),
-    )
-)
+plot_desemprego_divida_lp_filtrado.add_trace(go.Scatter(x=desemprego_divida_lp_filtrado['data'],
+                         y=desemprego_divida_lp_filtrado['valor'], 
+                         mode='lines',
+                         name='taxa de desocupação',
+                         opacity=1,
+                        line=dict(color='dimgray', width=2, dash='dot')))
 
-col1, col2 = st.columns((2))
+plot_desemprego_divida_lp_filtrado.update_layout(yaxis2=dict(overlaying='y',
+                              side='right',
+                             showgrid=False,
+                             title = "Endividamento de longo prazo"),
+                 template="seaborn",
+                  legend=dict(x = 0.5,
+                              y = -0.3,
+                              orientation='h',
+                              xanchor='center'),
+                 xaxis=dict(showgrid=False),
+                 yaxis=dict(showgrid=False,
+                           title = "Taxa de desocupação"))
 
-with col1:
-    st.plotly_chart(plot_ocupacao_divida,use_container_width=True, height = 200)
-
-with col2:
-    st.plotly_chart(plot_setor_divida,use_container_width=True, height = 200)
-
-st.subheader('Dados macroeconômicos vs endividamento')
-
-inflacao_df = pd.read_csv("estudo_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
-
-inflacao_df["data_base"] = pd.to_datetime(inflacao_df["data_base"], format='%Y-%m')
-
-inflacao_df_filtrado = inflacao_df[(inflacao_df["data_base"] >= date1) & (inflacao_df["data_base"] <= date2)].copy()
-
-plot_inflacao = px.scatter(inflacao_df_filtrado, x="carteira_ativa", y="inflacao",
-                          template="seaborn")
-
-st.plotly_chart(plot_inflacao, use_container_width=True)
+st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
 
 divida_uf = pd.read_csv("analise_divida_uf.csv", encoding="UTF-8", delimiter=',', decimal='.')
 divida_uf["ano"] = pd.to_datetime(divida_uf["ano"], format='%Y')
@@ -192,67 +167,102 @@ plot_divida_uf.update_layout(
 
 st.plotly_chart(plot_divida_uf, use_container_width=True)
 
-#Mapa
-
-empregado_empresaprivada = pd.read_csv("empregado_empresaprivada_uf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
-servidor_publico = pd.read_csv("servidor_publico_uf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
-
-
-url = "https://raw.githubusercontent.com/jonates/opendata/master/arquivos_geoespaciais/unidades_da_federacao.json" #Temos que dar os créditos
-response = requests.get(url)
-geojson_data = response.json()
-
+#Mapa endividamento PF e PJ
 st.title('Análise dos ativos problemáticos')
-
-plot_empresaprivada_uf = px.choropleth_mapbox(empregado_empresaprivada, 
-                           geojson=geojson_data, 
-                           locations='coluna_estado', 
-                           color='ativo_problematico',
-                           color_continuous_scale="sunsetdark",
-                           range_color=(0, max(empregado_empresaprivada['ativo_problematico'])),
-                           mapbox_style="open-street-map",
-                           zoom=2,
-                           animation_frame='ano', 
-                           center={"lat": -17.14, "lon": -57.33},
-                           opacity=1,
-                           labels={'ativo_problematico':'Ativo problemático',
-                                   'uf': 'Unidade da Federação do Brasil'},
-                           featureidkey="properties.NM_ESTADO", title='Empregados de empresas privadas')
-
-plot_empresaprivada_uf.update_layout(
-    margin={'r':0,'t':40,'l':0, 'b':0}, # Ajuste na margem superior
-    title='Empregados de empresas privadas',
-    title_x=0.5,  # centraliza o título horizontalmente
-    title_y=1    # posiciona o título no topo
-)
-
-plot_empregado_servidorpublico = px.choropleth_mapbox(servidor_publico, 
-                           geojson=geojson_data, 
-                           locations='coluna_estado', 
-                           color='ativo_problematico',
-                           color_continuous_scale="sunsetdark",
-                           range_color=(0, max(servidor_publico['ativo_problematico'])),
-                           mapbox_style="open-street-map",
-                           zoom=2,
-                           animation_frame='ano', 
-                           center={"lat": -17.14, "lon": -57.33},
-                           opacity=1,
-                           labels={'ativo_problematico':'Ativo problemático',
-                                   'uf': 'Unidade da Federação do Brasil'},
-                           featureidkey="properties.NM_ESTADO",
-                                                     title='Servidores ou empregados públicos')
-
-plot_empregado_servidorpublico.update_layout(
-    margin={'r':0,'t':40,'l':0, 'b':0},  # Ajuste na margem superior
-    title='Servidores ou empregados públicos',
-    title_x=0.5,  # centraliza o título horizontalmente
-    title_y=1     # posiciona o título no topo
-)
 
 col3, col4 = st.columns((2))
 
 with col3:
-    st.plotly_chart(plot_empresaprivada_uf,use_container_width=True, height = 200, config={'scrollZoom': True})
+    
+    df_ocupacao_pf_ativoproblematico = pd.read_csv("df_ocupacao_pf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+
+    url = "https://raw.githubusercontent.com/jonates/opendata/master/arquivos_geoespaciais/unidades_da_federacao.json" #Temos que dar os créditos
+    response = requests.get(url)
+    geojson_data = response.json()
+
+    
+
+    ocupacao = st.selectbox(
+        'Selecione uma ocupação:',
+        df_ocupacao_pf_ativoproblematico['ocupacao'].unique()
+    )
+
+    df_ocupacao_pf_ativoproblematico_filtered = df_ocupacao_pf_ativoproblematico[df_ocupacao_pf_ativoproblematico['ocupacao'] == ocupacao]
+
+
+    plot_ocupacao_pf_ativoproblematico = px.choropleth_mapbox(df_ocupacao_pf_ativoproblematico_filtered, 
+                               geojson=geojson_data, 
+                               locations='Estado', 
+                               color='ativo_problematico_deflacionado',
+                               color_continuous_scale="sunsetdark",
+                               range_color=(0, max(df_ocupacao_pf_ativoproblematico_filtered['ativo_problematico_deflacionado'])),
+                               animation_frame='ano', 
+                               mapbox_style="open-street-map",
+                               zoom=1.9, 
+                               center={"lat": -17.14, "lon": -57.33},
+                               opacity=1,
+                               labels={'ativo_problematico':'Ativo problemático',
+                                       'uf': 'Unidade da Federação do Brasil'},
+                               featureidkey="properties.NM_ESTADO")
+    
+    plot_ocupacao_pf_ativoproblematico.update_layout(
+    coloraxis_colorbar=dict(
+        len=1, 
+        y=-0.25,  
+        yanchor='bottom',  
+        xanchor='center',
+        x=0.5,   
+        orientation='h',  
+        title="Ativo problemático deflacionado",
+        titleside = "bottom"
+    ),
+        margin=dict(t=0, b=0, l=0, r=0)
+)
+
+    
+    st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True, height = 200)
 
 with col4:
-    st.plotly_chart(plot_empregado_servidorpublico,use_container_width=True, height = 200, config={'scrollZoom': True}, title='Servidores ou empregados públicos')
+
+    df_cnae_pj_ativoproblematico = pd.read_csv("df_cnae_pj_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+    cnae_secao = st.selectbox(
+        'Selecione um setor de atuação:',
+        df_cnae_pj_ativoproblematico['cnae_secao'].unique()
+    )
+
+    df_cnae_pj_ativoproblematico_filtered = df_cnae_pj_ativoproblematico[df_cnae_pj_ativoproblematico['cnae_secao'] == cnae_secao]
+
+
+    plot_cnae_pj_ativoproblematico = px.choropleth_mapbox(df_cnae_pj_ativoproblematico_filtered, 
+                               geojson=geojson_data, 
+                               locations='Estado', 
+                               color='ativo_problematico_deflacionado',
+                               color_continuous_scale="sunsetdark",
+                               range_color=(0, max(df_cnae_pj_ativoproblematico_filtered['ativo_problematico_deflacionado'])),
+                               animation_frame='ano', 
+                               mapbox_style="open-street-map",
+                               zoom=1.9, 
+                               center={"lat": -17.14, "lon": -57.33},
+                               opacity=1,
+                               labels={'ativo_problematico':'Ativo problemático',
+                                       'uf': 'Unidade da Federação do Brasil'},
+                               featureidkey="properties.NM_ESTADO")
+    
+    plot_cnae_pj_ativoproblematico.update_layout(
+    coloraxis_colorbar=dict(
+        len=1,
+        y=-0.25,  
+        yanchor='bottom',  
+        xanchor='center',
+        x=0.5,   
+        orientation='h',  
+        title="Ativo problemático deflacionado",
+        titleside = "bottom"
+    ),
+        margin=dict(t=0, b=0, l=0, r=0)
+)
+
+    
+    st.plotly_chart(plot_cnae_pj_ativoproblematico,use_container_width=True, height = 200)
