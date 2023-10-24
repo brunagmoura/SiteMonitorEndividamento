@@ -9,13 +9,6 @@ import calendar
 import json
 import requests
 from dash import Dash, dcc, html, Input, Output
-import holoviews as hv
-import geoviews as gv
-import geoviews.feature as gf
-from geoviews import tile_sources as gvts
-from holoviews import opts
-
-hv.extension('bokeh')
 
 warnings.filterwarnings('ignore')
 
@@ -224,10 +217,14 @@ plot_empresaprivada_uf = px.choropleth_mapbox(empregado_empresaprivada,
                            opacity=1,
                            labels={'ativo_problematico':'Ativo problemático',
                                    'uf': 'Unidade da Federação do Brasil'},
-                           featureidkey="properties.NM_ESTADO",
-                           title='Empregados de empresas privadas')
+                           featureidkey="properties.NM_ESTADO", title='Empregados de empresas privadas')
 
-plot_empresaprivada_uf.update_layout(margin={'r':0,'t':0,'l':0, 'b':0})
+plot_empresaprivada_uf.update_layout(
+    margin={'r':0,'t':40,'l':0, 'b':0}, # Ajuste na margem superior
+    title='Empregados de empresas privadas',
+    title_x=0.5,  # centraliza o título horizontalmente
+    title_y=1    # posiciona o título no topo
+)
 
 plot_empregado_servidorpublico = px.choropleth_mapbox(servidor_publico, 
                            geojson=geojson_data, 
@@ -243,9 +240,14 @@ plot_empregado_servidorpublico = px.choropleth_mapbox(servidor_publico,
                            labels={'ativo_problematico':'Ativo problemático',
                                    'uf': 'Unidade da Federação do Brasil'},
                            featureidkey="properties.NM_ESTADO",
-                           title='Servidores ou empregados públicos')
+                                                     title='Servidores ou empregados públicos')
 
-plot_empregado_servidorpublico.update_layout(margin={'r':0,'t':0,'l':0, 'b':0})
+plot_empregado_servidorpublico.update_layout(
+    margin={'r':0,'t':40,'l':0, 'b':0},  # Ajuste na margem superior
+    title='Servidores ou empregados públicos',
+    title_x=0.5,  # centraliza o título horizontalmente
+    title_y=1     # posiciona o título no topo
+)
 
 col3, col4 = st.columns((2))
 
@@ -253,4 +255,4 @@ with col3:
     st.plotly_chart(plot_empresaprivada_uf,use_container_width=True, height = 200, config={'scrollZoom': True})
 
 with col4:
-    st.plotly_chart(plot_empregado_servidorpublico,use_container_width=True, height = 200, config={'scrollZoom': True})
+    st.plotly_chart(plot_empregado_servidorpublico,use_container_width=True, height = 200, config={'scrollZoom': True}, title='Servidores ou empregados públicos')
