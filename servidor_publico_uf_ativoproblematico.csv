@@ -1,0 +1,298 @@
+,Unnamed: 0,ano,cliente,uf,ocupacao,ativo_problematico,coluna_estado
+6,6,2012,PF,AC,PF - Servidor ou empregado público,70712861.89,ACRE
+13,13,2012,PF,AL,PF - Servidor ou empregado público,127561937.05,ALAGOAS
+20,20,2012,PF,AM,PF - Servidor ou empregado público,197365247.85,AMAZONAS
+27,27,2012,PF,AP,PF - Servidor ou empregado público,127167300.31,AMAPÁ
+34,34,2012,PF,BA,PF - Servidor ou empregado público,451300577.55,BAHIA
+41,41,2012,PF,CE,PF - Servidor ou empregado público,234286315.58,CEARÁ
+48,48,2012,PF,DF,PF - Servidor ou empregado público,688856663.69,DISTRITO FEDERAL
+55,55,2012,PF,ES,PF - Servidor ou empregado público,140505442.32,ESPÍRITO SANTO
+62,62,2012,PF,GO,PF - Servidor ou empregado público,402106581.01,GOIÁS
+69,69,2012,PF,MA,PF - Servidor ou empregado público,168159913.73,MARANHÃO
+76,76,2012,PF,MG,PF - Servidor ou empregado público,669089726.12,MINAS GERAIS
+83,83,2012,PF,MS,PF - Servidor ou empregado público,151222086.74,MATO GROSSO DO SUL
+90,90,2012,PF,MT,PF - Servidor ou empregado público,223544894.56,MATO GROSSO
+97,97,2012,PF,PA,PF - Servidor ou empregado público,258377796.02,PARÁ
+104,104,2012,PF,PB,PF - Servidor ou empregado público,164009868.49,PARAÍBA
+111,111,2012,PF,PE,PF - Servidor ou empregado público,270361571.99,PERNAMBUCO
+118,118,2012,PF,PI,PF - Servidor ou empregado público,110605674.38,PIAUÍ
+125,125,2012,PF,PR,PF - Servidor ou empregado público,349690223.33,PARANÁ
+133,133,2012,PF,RJ,PF - Servidor ou empregado público,1402933696.22,RIO DE JANEIRO
+140,140,2012,PF,RN,PF - Servidor ou empregado público,156804104.45,RIO GRANDE DO NORTE
+147,147,2012,PF,RO,PF - Servidor ou empregado público,114169132.09,RONDÔNIA
+154,154,2012,PF,RR,PF - Servidor ou empregado público,73479790.13,RORAIMA
+162,162,2012,PF,RS,PF - Servidor ou empregado público,557938089.42,RIO GRANDE DO SUL
+169,169,2012,PF,SC,PF - Servidor ou empregado público,221360296.22,SANTA CATARINA
+176,176,2012,PF,SE,PF - Servidor ou empregado público,117600975.69,SERGIPE
+184,184,2012,PF,SP,PF - Servidor ou empregado público,1652584638.04,SÃO PAULO
+191,191,2012,PF,TO,PF - Servidor ou empregado público,109292823.29,TOCANTINS
+725,6,2013,PF,AC,PF - Servidor ou empregado público,74833537.66,ACRE
+732,13,2013,PF,AL,PF - Servidor ou empregado público,125773635.41,ALAGOAS
+739,20,2013,PF,AM,PF - Servidor ou empregado público,230226733.74,AMAZONAS
+746,27,2013,PF,AP,PF - Servidor ou empregado público,107008738.14,AMAPÁ
+753,34,2013,PF,BA,PF - Servidor ou empregado público,574730382.28,BAHIA
+760,41,2013,PF,CE,PF - Servidor ou empregado público,228574832.29,CEARÁ
+767,48,2013,PF,DF,PF - Servidor ou empregado público,710791036.64,DISTRITO FEDERAL
+774,55,2013,PF,ES,PF - Servidor ou empregado público,139457706.05,ESPÍRITO SANTO
+781,62,2013,PF,GO,PF - Servidor ou empregado público,377962854.96999997,GOIÁS
+788,69,2013,PF,MA,PF - Servidor ou empregado público,169788848.06,MARANHÃO
+795,76,2013,PF,MG,PF - Servidor ou empregado público,744750935.72,MINAS GERAIS
+802,83,2013,PF,MS,PF - Servidor ou empregado público,155473119.75,MATO GROSSO DO SUL
+809,90,2013,PF,MT,PF - Servidor ou empregado público,250577098.15,MATO GROSSO
+816,97,2013,PF,PA,PF - Servidor ou empregado público,307134006.61,PARÁ
+824,105,2013,PF,PB,PF - Servidor ou empregado público,192537199.87,PARAÍBA
+831,112,2013,PF,PE,PF - Servidor ou empregado público,279290773.23,PERNAMBUCO
+838,119,2013,PF,PI,PF - Servidor ou empregado público,103345911.51,PIAUÍ
+845,126,2013,PF,PR,PF - Servidor ou empregado público,363372656.88,PARANÁ
+853,134,2013,PF,RJ,PF - Servidor ou empregado público,1327485713.6,RIO DE JANEIRO
+860,141,2013,PF,RN,PF - Servidor ou empregado público,168858403.45,RIO GRANDE DO NORTE
+867,148,2013,PF,RO,PF - Servidor ou empregado público,140777434.16,RONDÔNIA
+874,155,2013,PF,RR,PF - Servidor ou empregado público,80904535.36,RORAIMA
+882,163,2013,PF,RS,PF - Servidor ou empregado público,503056459.59,RIO GRANDE DO SUL
+889,170,2013,PF,SC,PF - Servidor ou empregado público,237949068.37,SANTA CATARINA
+896,177,2013,PF,SE,PF - Servidor ou empregado público,140958850.79,SERGIPE
+904,185,2013,PF,SP,PF - Servidor ou empregado público,1880484533.5,SÃO PAULO
+911,192,2013,PF,TO,PF - Servidor ou empregado público,137226717.8,TOCANTINS
+1448,6,2014,PF,AC,PF - Servidor ou empregado público,67823788.32000001,ACRE
+1455,13,2014,PF,AL,PF - Servidor ou empregado público,129747175.14999999,ALAGOAS
+1462,20,2014,PF,AM,PF - Servidor ou empregado público,217858845.82999998,AMAZONAS
+1469,27,2014,PF,AP,PF - Servidor ou empregado público,99178676.7,AMAPÁ
+1476,34,2014,PF,BA,PF - Servidor ou empregado público,498036409.34,BAHIA
+1483,41,2014,PF,CE,PF - Servidor ou empregado público,225708225.18,CEARÁ
+1490,48,2014,PF,DF,PF - Servidor ou empregado público,674307195.1800001,DISTRITO FEDERAL
+1497,55,2014,PF,ES,PF - Servidor ou empregado público,146289750.46,ESPÍRITO SANTO
+1504,62,2014,PF,GO,PF - Servidor ou empregado público,340299236.27,GOIÁS
+1511,69,2014,PF,MA,PF - Servidor ou empregado público,176465102.98,MARANHÃO
+1518,76,2014,PF,MG,PF - Servidor ou empregado público,693763882.18,MINAS GERAIS
+1525,83,2014,PF,MS,PF - Servidor ou empregado público,160524395.83,MATO GROSSO DO SUL
+1532,90,2014,PF,MT,PF - Servidor ou empregado público,232848755.46,MATO GROSSO
+1539,97,2014,PF,PA,PF - Servidor ou empregado público,316484170.07,PARÁ
+1547,105,2014,PF,PB,PF - Servidor ou empregado público,173910028.18,PARAÍBA
+1554,112,2014,PF,PE,PF - Servidor ou empregado público,271422163.85,PERNAMBUCO
+1561,119,2014,PF,PI,PF - Servidor ou empregado público,100732420.8,PIAUÍ
+1568,126,2014,PF,PR,PF - Servidor ou empregado público,368203663.40999997,PARANÁ
+1576,134,2014,PF,RJ,PF - Servidor ou empregado público,1327248072.9,RIO DE JANEIRO
+1583,141,2014,PF,RN,PF - Servidor ou empregado público,182331134.49,RIO GRANDE DO NORTE
+1590,148,2014,PF,RO,PF - Servidor ou empregado público,127207444.7,RONDÔNIA
+1597,155,2014,PF,RR,PF - Servidor ou empregado público,71568132.53,RORAIMA
+1605,163,2014,PF,RS,PF - Servidor ou empregado público,507035557.2,RIO GRANDE DO SUL
+1612,170,2014,PF,SC,PF - Servidor ou empregado público,225093435.37,SANTA CATARINA
+1619,177,2014,PF,SE,PF - Servidor ou empregado público,128724439.97,SERGIPE
+1627,185,2014,PF,SP,PF - Servidor ou empregado público,1861064720.84,SÃO PAULO
+1634,192,2014,PF,TO,PF - Servidor ou empregado público,122953377.63,TOCANTINS
+2174,6,2015,PF,AC,PF - Servidor ou empregado público,68617812.76,ACRE
+2181,13,2015,PF,AL,PF - Servidor ou empregado público,130195350.52,ALAGOAS
+2188,20,2015,PF,AM,PF - Servidor ou empregado público,221328430.96,AMAZONAS
+2195,27,2015,PF,AP,PF - Servidor ou empregado público,119562266.14,AMAPÁ
+2202,34,2015,PF,BA,PF - Servidor ou empregado público,500145060.55,BAHIA
+2209,41,2015,PF,CE,PF - Servidor ou empregado público,218054585.19,CEARÁ
+2216,48,2015,PF,DF,PF - Servidor ou empregado público,695687763.31,DISTRITO FEDERAL
+2223,55,2015,PF,ES,PF - Servidor ou empregado público,159308807.02,ESPÍRITO SANTO
+2230,62,2015,PF,GO,PF - Servidor ou empregado público,371505492.78000003,GOIÁS
+2237,69,2015,PF,MA,PF - Servidor ou empregado público,194110415.0,MARANHÃO
+2244,76,2015,PF,MG,PF - Servidor ou empregado público,680156081.2,MINAS GERAIS
+2251,83,2015,PF,MS,PF - Servidor ou empregado público,171960696.7,MATO GROSSO DO SUL
+2258,90,2015,PF,MT,PF - Servidor ou empregado público,248881140.03,MATO GROSSO
+2265,97,2015,PF,PA,PF - Servidor ou empregado público,317822141.92,PARÁ
+2273,105,2015,PF,PB,PF - Servidor ou empregado público,163476699.09,PARAÍBA
+2280,112,2015,PF,PE,PF - Servidor ou empregado público,273709691.11,PERNAMBUCO
+2287,119,2015,PF,PI,PF - Servidor ou empregado público,101075541.73,PIAUÍ
+2294,126,2015,PF,PR,PF - Servidor ou empregado público,423129703.31,PARANÁ
+2302,134,2015,PF,RJ,PF - Servidor ou empregado público,1316608373.42,RIO DE JANEIRO
+2309,141,2015,PF,RN,PF - Servidor ou empregado público,168987991.02,RIO GRANDE DO NORTE
+2316,148,2015,PF,RO,PF - Servidor ou empregado público,117030241.0,RONDÔNIA
+2323,155,2015,PF,RR,PF - Servidor ou empregado público,78770209.89,RORAIMA
+2331,163,2015,PF,RS,PF - Servidor ou empregado público,549507214.18,RIO GRANDE DO SUL
+2338,170,2015,PF,SC,PF - Servidor ou empregado público,225094337.7,SANTA CATARINA
+2345,177,2015,PF,SE,PF - Servidor ou empregado público,132323262.0,SERGIPE
+2353,185,2015,PF,SP,PF - Servidor ou empregado público,1938396943.53,SÃO PAULO
+2360,192,2015,PF,TO,PF - Servidor ou empregado público,128198779.59,TOCANTINS
+2901,7,2016,PF,AC,PF - Servidor ou empregado público,83536996.15,ACRE
+2909,15,2016,PF,AL,PF - Servidor ou empregado público,163349058.52,ALAGOAS
+2917,23,2016,PF,AM,PF - Servidor ou empregado público,320117909.55,AMAZONAS
+2925,31,2016,PF,AP,PF - Servidor ou empregado público,147429362.65,AMAPÁ
+2933,39,2016,PF,BA,PF - Servidor ou empregado público,608692057.85,BAHIA
+2941,47,2016,PF,CE,PF - Servidor ou empregado público,323268892.86,CEARÁ
+2949,55,2016,PF,DF,PF - Servidor ou empregado público,710396280.39,DISTRITO FEDERAL
+2957,63,2016,PF,ES,PF - Servidor ou empregado público,184102723.6,ESPÍRITO SANTO
+2965,71,2016,PF,GO,PF - Servidor ou empregado público,463053482.51,GOIÁS
+2973,79,2016,PF,MA,PF - Servidor ou empregado público,284945417.26,MARANHÃO
+2981,87,2016,PF,MG,PF - Servidor ou empregado público,857184660.71,MINAS GERAIS
+2989,95,2016,PF,MS,PF - Servidor ou empregado público,214927022.27,MATO GROSSO DO SUL
+2997,103,2016,PF,MT,PF - Servidor ou empregado público,226140992.04,MATO GROSSO
+3005,111,2016,PF,PA,PF - Servidor ou empregado público,472287385.21999997,PARÁ
+3013,119,2016,PF,PB,PF - Servidor ou empregado público,215990894.28,PARAÍBA
+3021,127,2016,PF,PE,PF - Servidor ou empregado público,377808816.16,PERNAMBUCO
+3029,135,2016,PF,PI,PF - Servidor ou empregado público,135650670.86,PIAUÍ
+3037,143,2016,PF,PR,PF - Servidor ou empregado público,445379484.34999996,PARANÁ
+3045,151,2016,PF,RJ,PF - Servidor ou empregado público,1627593847.3,RIO DE JANEIRO
+3053,159,2016,PF,RN,PF - Servidor ou empregado público,245861867.06,RIO GRANDE DO NORTE
+3061,167,2016,PF,RO,PF - Servidor ou empregado público,133828729.94,RONDÔNIA
+3069,175,2016,PF,RR,PF - Servidor ou empregado público,86376261.6,RORAIMA
+3077,183,2016,PF,RS,PF - Servidor ou empregado público,553128153.38,RIO GRANDE DO SUL
+3085,191,2016,PF,SC,PF - Servidor ou empregado público,263637029.52,SANTA CATARINA
+3093,199,2016,PF,SE,PF - Servidor ou empregado público,174696908.95,SERGIPE
+3101,207,2016,PF,SP,PF - Servidor ou empregado público,1942791984.94,SÃO PAULO
+3109,215,2016,PF,TO,PF - Servidor ou empregado público,165133200.19,TOCANTINS
+3657,7,2017,PF,AC,PF - Servidor ou empregado público,87105261.1,ACRE
+3665,15,2017,PF,AL,PF - Servidor ou empregado público,192564297.71,ALAGOAS
+3673,23,2017,PF,AM,PF - Servidor ou empregado público,340443531.99,AMAZONAS
+3681,31,2017,PF,AP,PF - Servidor ou empregado público,187220411.32,AMAPÁ
+3689,39,2017,PF,BA,PF - Servidor ou empregado público,669455226.12,BAHIA
+3697,47,2017,PF,CE,PF - Servidor ou empregado público,364567566.29,CEARÁ
+3705,55,2017,PF,DF,PF - Servidor ou empregado público,748640125.39,DISTRITO FEDERAL
+3713,63,2017,PF,ES,PF - Servidor ou empregado público,218534874.35,ESPÍRITO SANTO
+3721,71,2017,PF,GO,PF - Servidor ou empregado público,495795915.86,GOIÁS
+3729,79,2017,PF,MA,PF - Servidor ou empregado público,353893131.32,MARANHÃO
+3737,87,2017,PF,MG,PF - Servidor ou empregado público,1104299649.58,MINAS GERAIS
+3745,95,2017,PF,MS,PF - Servidor ou empregado público,242437603.86,MATO GROSSO DO SUL
+3753,103,2017,PF,MT,PF - Servidor ou empregado público,265173582.0,MATO GROSSO
+3761,111,2017,PF,PA,PF - Servidor ou empregado público,564746254.64,PARÁ
+3769,119,2017,PF,PB,PF - Servidor ou empregado público,254882163.17000002,PARAÍBA
+3777,127,2017,PF,PE,PF - Servidor ou empregado público,449985909.77,PERNAMBUCO
+3785,135,2017,PF,PI,PF - Servidor ou empregado público,164088750.17,PIAUÍ
+3793,143,2017,PF,PR,PF - Servidor ou empregado público,555520133.78,PARANÁ
+3801,151,2017,PF,RJ,PF - Servidor ou empregado público,1656700784.94,RIO DE JANEIRO
+3809,159,2017,PF,RN,PF - Servidor ou empregado público,287970741.89,RIO GRANDE DO NORTE
+3817,167,2017,PF,RO,PF - Servidor ou empregado público,159915526.31,RONDÔNIA
+3825,175,2017,PF,RR,PF - Servidor ou empregado público,111811650.05,RORAIMA
+3833,183,2017,PF,RS,PF - Servidor ou empregado público,630225971.26,RIO GRANDE DO SUL
+3841,191,2017,PF,SC,PF - Servidor ou empregado público,314619846.91,SANTA CATARINA
+3849,199,2017,PF,SE,PF - Servidor ou empregado público,165977375.04,SERGIPE
+3857,207,2017,PF,SP,PF - Servidor ou empregado público,2412955766.16,SÃO PAULO
+3865,215,2017,PF,TO,PF - Servidor ou empregado público,166417791.48000002,TOCANTINS
+4411,7,2018,PF,AC,PF - Servidor ou empregado público,78541565.83,ACRE
+4419,15,2018,PF,AL,PF - Servidor ou empregado público,184147365.99,ALAGOAS
+4427,23,2018,PF,AM,PF - Servidor ou empregado público,293484309.77,AMAZONAS
+4435,31,2018,PF,AP,PF - Servidor ou empregado público,171269128.25,AMAPÁ
+4443,39,2018,PF,BA,PF - Servidor ou empregado público,616860482.46,BAHIA
+4451,47,2018,PF,CE,PF - Servidor ou empregado público,352153944.41,CEARÁ
+4459,55,2018,PF,DF,PF - Servidor ou empregado público,707414712.71,DISTRITO FEDERAL
+4467,63,2018,PF,ES,PF - Servidor ou empregado público,206274161.18,ESPÍRITO SANTO
+4475,71,2018,PF,GO,PF - Servidor ou empregado público,503353657.34000003,GOIÁS
+4483,79,2018,PF,MA,PF - Servidor ou empregado público,358154937.4,MARANHÃO
+4491,87,2018,PF,MG,PF - Servidor ou empregado público,1195083244.68,MINAS GERAIS
+4499,95,2018,PF,MS,PF - Servidor ou empregado público,232104280.18,MATO GROSSO DO SUL
+4507,103,2018,PF,MT,PF - Servidor ou empregado público,269667761.25,MATO GROSSO
+4515,111,2018,PF,PA,PF - Servidor ou empregado público,541156711.25,PARÁ
+4523,119,2018,PF,PB,PF - Servidor ou empregado público,263264854.16,PARAÍBA
+4531,127,2018,PF,PE,PF - Servidor ou empregado público,423488389.09000003,PERNAMBUCO
+4539,135,2018,PF,PI,PF - Servidor ou empregado público,188201274.71,PIAUÍ
+4547,143,2018,PF,PR,PF - Servidor ou empregado público,573007685.66,PARANÁ
+4555,151,2018,PF,RJ,PF - Servidor ou empregado público,1461345677.95,RIO DE JANEIRO
+4563,159,2018,PF,RN,PF - Servidor ou empregado público,324857750.53,RIO GRANDE DO NORTE
+4571,167,2018,PF,RO,PF - Servidor ou empregado público,157317926.97,RONDÔNIA
+4579,175,2018,PF,RR,PF - Servidor ou empregado público,240784717.44,RORAIMA
+4587,183,2018,PF,RS,PF - Servidor ou empregado público,645900977.34,RIO GRANDE DO SUL
+4595,191,2018,PF,SC,PF - Servidor ou empregado público,329715730.06,SANTA CATARINA
+4603,199,2018,PF,SE,PF - Servidor ou empregado público,157886636.62,SERGIPE
+4611,207,2018,PF,SP,PF - Servidor ou empregado público,2268484380.5,SÃO PAULO
+4619,215,2018,PF,TO,PF - Servidor ou empregado público,204964230.18,TOCANTINS
+5167,7,2019,PF,AC,PF - Servidor ou empregado público,104049219.81,ACRE
+5175,15,2019,PF,AL,PF - Servidor ou empregado público,215200325.19,ALAGOAS
+5183,23,2019,PF,AM,PF - Servidor ou empregado público,310478931.48,AMAZONAS
+5191,31,2019,PF,AP,PF - Servidor ou empregado público,170971802.85,AMAPÁ
+5199,39,2019,PF,BA,PF - Servidor ou empregado público,731518817.5,BAHIA
+5207,47,2019,PF,CE,PF - Servidor ou empregado público,403083064.31,CEARÁ
+5215,55,2019,PF,DF,PF - Servidor ou empregado público,708337283.99,DISTRITO FEDERAL
+5223,63,2019,PF,ES,PF - Servidor ou empregado público,239115942.39,ESPÍRITO SANTO
+5231,71,2019,PF,GO,PF - Servidor ou empregado público,642906270.19,GOIÁS
+5239,79,2019,PF,MA,PF - Servidor ou empregado público,436150196.11,MARANHÃO
+5247,87,2019,PF,MG,PF - Servidor ou empregado público,1080607119.58,MINAS GERAIS
+5255,95,2019,PF,MS,PF - Servidor ou empregado público,284983061.03000003,MATO GROSSO DO SUL
+5263,103,2019,PF,MT,PF - Servidor ou empregado público,353426607.61,MATO GROSSO
+5271,111,2019,PF,PA,PF - Servidor ou empregado público,580741579.22,PARÁ
+5279,119,2019,PF,PB,PF - Servidor ou empregado público,310775006.6,PARAÍBA
+5287,127,2019,PF,PE,PF - Servidor ou empregado público,504675251.34999996,PERNAMBUCO
+5295,135,2019,PF,PI,PF - Servidor ou empregado público,221866263.42,PIAUÍ
+5303,143,2019,PF,PR,PF - Servidor ou empregado público,688242567.92,PARANÁ
+5311,151,2019,PF,RJ,PF - Servidor ou empregado público,1713476922.22,RIO DE JANEIRO
+5319,159,2019,PF,RN,PF - Servidor ou empregado público,301006579.17,RIO GRANDE DO NORTE
+5327,167,2019,PF,RO,PF - Servidor ou empregado público,197081243.85999998,RONDÔNIA
+5335,175,2019,PF,RR,PF - Servidor ou empregado público,197092037.28,RORAIMA
+5343,183,2019,PF,RS,PF - Servidor ou empregado público,763925637.38,RIO GRANDE DO SUL
+5351,191,2019,PF,SC,PF - Servidor ou empregado público,385710234.96999997,SANTA CATARINA
+5359,199,2019,PF,SE,PF - Servidor ou empregado público,176276422.68,SERGIPE
+5367,207,2019,PF,SP,PF - Servidor ou empregado público,2481660444.75,SÃO PAULO
+5375,215,2019,PF,TO,PF - Servidor ou empregado público,164262395.82,TOCANTINS
+5927,7,2020,PF,AC,PF - Servidor ou empregado público,104173857.94,ACRE
+5935,15,2020,PF,AL,PF - Servidor ou empregado público,231623153.92000002,ALAGOAS
+5943,23,2020,PF,AM,PF - Servidor ou empregado público,404282999.76,AMAZONAS
+5951,31,2020,PF,AP,PF - Servidor ou empregado público,183610601.27,AMAPÁ
+5959,39,2020,PF,BA,PF - Servidor ou empregado público,862987192.83,BAHIA
+5967,47,2020,PF,CE,PF - Servidor ou empregado público,493369495.98,CEARÁ
+5975,55,2020,PF,DF,PF - Servidor ou empregado público,777778697.03,DISTRITO FEDERAL
+5983,63,2020,PF,ES,PF - Servidor ou empregado público,241868054.61,ESPÍRITO SANTO
+5991,71,2020,PF,GO,PF - Servidor ou empregado público,623759003.33,GOIÁS
+5999,79,2020,PF,MA,PF - Servidor ou empregado público,718863152.43,MARANHÃO
+6007,87,2020,PF,MG,PF - Servidor ou empregado público,1084388446.72,MINAS GERAIS
+6015,95,2020,PF,MS,PF - Servidor ou empregado público,342931303.79,MATO GROSSO DO SUL
+6023,103,2020,PF,MT,PF - Servidor ou empregado público,373349231.6,MATO GROSSO
+6031,111,2020,PF,PA,PF - Servidor ou empregado público,643946075.47,PARÁ
+6039,119,2020,PF,PB,PF - Servidor ou empregado público,363370292.85,PARAÍBA
+6047,127,2020,PF,PE,PF - Servidor ou empregado público,603879522.41,PERNAMBUCO
+6055,135,2020,PF,PI,PF - Servidor ou empregado público,252643729.88,PIAUÍ
+6063,143,2020,PF,PR,PF - Servidor ou empregado público,758661645.74,PARANÁ
+6071,151,2020,PF,RJ,PF - Servidor ou empregado público,2305107199.6,RIO DE JANEIRO
+6079,159,2020,PF,RN,PF - Servidor ou empregado público,334231470.79,RIO GRANDE DO NORTE
+6087,167,2020,PF,RO,PF - Servidor ou empregado público,212174065.56,RONDÔNIA
+6095,175,2020,PF,RR,PF - Servidor ou empregado público,178299504.55,RORAIMA
+6103,183,2020,PF,RS,PF - Servidor ou empregado público,823302950.16,RIO GRANDE DO SUL
+6111,191,2020,PF,SC,PF - Servidor ou empregado público,429515603.43,SANTA CATARINA
+6119,199,2020,PF,SE,PF - Servidor ou empregado público,186519285.59,SERGIPE
+6127,207,2020,PF,SP,PF - Servidor ou empregado público,2615228915.83,SÃO PAULO
+6135,215,2020,PF,TO,PF - Servidor ou empregado público,184495426.1,TOCANTINS
+6687,7,2021,PF,AC,PF - Servidor ou empregado público,121704088.05,ACRE
+6695,15,2021,PF,AL,PF - Servidor ou empregado público,257542853.95,ALAGOAS
+6703,23,2021,PF,AM,PF - Servidor ou empregado público,524725208.96,AMAZONAS
+6711,31,2021,PF,AP,PF - Servidor ou empregado público,192460239.63,AMAPÁ
+6719,39,2021,PF,BA,PF - Servidor ou empregado público,1051761085.0500001,BAHIA
+6727,47,2021,PF,CE,PF - Servidor ou empregado público,638692135.39,CEARÁ
+6735,55,2021,PF,DF,PF - Servidor ou empregado público,841455124.12,DISTRITO FEDERAL
+6743,63,2021,PF,ES,PF - Servidor ou empregado público,253996234.17,ESPÍRITO SANTO
+6751,71,2021,PF,GO,PF - Servidor ou empregado público,712613460.01,GOIÁS
+6759,79,2021,PF,MA,PF - Servidor ou empregado público,769542836.74,MARANHÃO
+6767,87,2021,PF,MG,PF - Servidor ou empregado público,1287612732.07,MINAS GERAIS
+6775,95,2021,PF,MS,PF - Servidor ou empregado público,469271795.33,MATO GROSSO DO SUL
+6783,103,2021,PF,MT,PF - Servidor ou empregado público,449525443.96999997,MATO GROSSO
+6791,111,2021,PF,PA,PF - Servidor ou empregado público,739593404.69,PARÁ
+6799,119,2021,PF,PB,PF - Servidor ou empregado público,442382292.77,PARAÍBA
+6807,127,2021,PF,PE,PF - Servidor ou empregado público,766645335.67,PERNAMBUCO
+6815,135,2021,PF,PI,PF - Servidor ou empregado público,292015333.57,PIAUÍ
+6823,143,2021,PF,PR,PF - Servidor ou empregado público,899767697.22,PARANÁ
+6831,151,2021,PF,RJ,PF - Servidor ou empregado público,2615160535.79,RIO DE JANEIRO
+6839,159,2021,PF,RN,PF - Servidor ou empregado público,356739671.84,RIO GRANDE DO NORTE
+6847,167,2021,PF,RO,PF - Servidor ou empregado público,238113068.04,RONDÔNIA
+6855,175,2021,PF,RR,PF - Servidor ou empregado público,151640524.45,RORAIMA
+6863,183,2021,PF,RS,PF - Servidor ou empregado público,946876062.63,RIO GRANDE DO SUL
+6871,191,2021,PF,SC,PF - Servidor ou empregado público,510099776.82,SANTA CATARINA
+6879,199,2021,PF,SE,PF - Servidor ou empregado público,202205479.12,SERGIPE
+6887,207,2021,PF,SP,PF - Servidor ou empregado público,3169593869.97,SÃO PAULO
+6895,215,2021,PF,TO,PF - Servidor ou empregado público,204612770.32999998,TOCANTINS
+7447,7,2022,PF,AC,PF - Servidor ou empregado público,167355138.12,ACRE
+7455,15,2022,PF,AL,PF - Servidor ou empregado público,354092267.88,ALAGOAS
+7463,23,2022,PF,AM,PF - Servidor ou empregado público,823679899.08,AMAZONAS
+7471,31,2022,PF,AP,PF - Servidor ou empregado público,254336262.94,AMAPÁ
+7479,39,2022,PF,BA,PF - Servidor ou empregado público,1526813512.52,BAHIA
+7487,47,2022,PF,CE,PF - Servidor ou empregado público,999754749.45,CEARÁ
+7495,55,2022,PF,DF,PF - Servidor ou empregado público,1176284189.33,DISTRITO FEDERAL
+7503,63,2022,PF,ES,PF - Servidor ou empregado público,334162860.28,ESPÍRITO SANTO
+7511,71,2022,PF,GO,PF - Servidor ou empregado público,1013638729.76,GOIÁS
+7519,79,2022,PF,MA,PF - Servidor ou empregado público,1056389795.85,MARANHÃO
+7527,87,2022,PF,MG,PF - Servidor ou empregado público,2074506397.14,MINAS GERAIS
+7535,95,2022,PF,MS,PF - Servidor ou empregado público,646540373.48,MATO GROSSO DO SUL
+7543,103,2022,PF,MT,PF - Servidor ou empregado público,626826029.24,MATO GROSSO
+7551,111,2022,PF,PA,PF - Servidor ou empregado público,1053146613.46,PARÁ
+7559,119,2022,PF,PB,PF - Servidor ou empregado público,670191956.71,PARAÍBA
+7567,127,2022,PF,PE,PF - Servidor ou empregado público,1146576846.21,PERNAMBUCO
+7575,135,2022,PF,PI,PF - Servidor ou empregado público,418397224.25,PIAUÍ
+7583,143,2022,PF,PR,PF - Servidor ou empregado público,1261601042.95,PARANÁ
+7591,151,2022,PF,RJ,PF - Servidor ou empregado público,3721773827.61,RIO DE JANEIRO
+7599,159,2022,PF,RN,PF - Servidor ou empregado público,517248670.22,RIO GRANDE DO NORTE
+7607,167,2022,PF,RO,PF - Servidor ou empregado público,321441680.8,RONDÔNIA
+7615,175,2022,PF,RR,PF - Servidor ou empregado público,169158647.36,RORAIMA
+7623,183,2022,PF,RS,PF - Servidor ou empregado público,1318755928.02,RIO GRANDE DO SUL
+7631,191,2022,PF,SC,PF - Servidor ou empregado público,722776132.4,SANTA CATARINA
+7639,199,2022,PF,SE,PF - Servidor ou empregado público,288060230.03,SERGIPE
+7647,207,2022,PF,SP,PF - Servidor ou empregado público,4418994093.54,SÃO PAULO
+7655,215,2022,PF,TO,PF - Servidor ou empregado público,274583743.0,TOCANTINS

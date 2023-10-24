@@ -9,6 +9,14 @@ import calendar
 import json
 import requests
 from dash import Dash, dcc, html, Input, Output
+import holoviews as hv
+import geoviews as gv
+import geoviews.feature as gf
+from geoviews import tile_sources as gvts
+from holoviews import opts
+
+hv.extension('bokeh')
+
 warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:",layout="wide")
@@ -193,33 +201,56 @@ st.plotly_chart(plot_divida_uf, use_container_width=True)
 
 #Mapa
 
-ocupacao_ativoproblematico = pd.read_csv("cliente_uf_ocupacao_ativo_problematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+empregado_empresaprivada = pd.read_csv("empregado_empresaprivada_uf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+servidor_publico = pd.read_csv("servidor_publico_uf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-url = "https://raw.githubusercontent.com/giuliano-oliveira/geodata-br-states/main/geojson/br_states.json" #Temos que dar os créditos
+
+url = "https://raw.githubusercontent.com/jonates/opendata/master/arquivos_geoespaciais/unidades_da_federacao.json" #Temos que dar os créditos
 response = requests.get(url)
 geojson_data = response.json()
 
-st.title('Análise de Carteira Ativa')
+st.title('Análise dos ativos problemáticos')
 
-ocupacao = st.selectbox('Selecione uma ocupação:', ocupacao_ativoproblematico['ocupacao'].unique())
-
-filtered_df = ocupacao_ativoproblematico[ocupacao_ativoproblematico['ocupacao'] == ocupacao]
-
-plot_ocupacao_uf = px.choropleth_mapbox(filtered_df, 
+plot_empresaprivada_uf = px.choropleth_mapbox(empregado_empresaprivada, 
                            geojson=geojson_data, 
-                           locations='uf', 
+                           locations='coluna_estado', 
                            color='ativo_problematico',
                            color_continuous_scale="sunsetdark",
-                           range_color=(0, max(filtered_df['ativo_problematico'])),
-                           animation_frame='ano', 
+                           range_color=(0, max(empregado_empresaprivada['ativo_problematico'])),
                            mapbox_style="open-street-map",
-                           zoom=3, 
+                           zoom=2,
+                           animation_frame='ano', 
                            center={"lat": -17.14, "lon": -57.33},
                            opacity=1,
-                           labels={'ativo_problematico':'Carteira Ativa',
+                           labels={'ativo_problematico':'Ativo problemático',
                                    'uf': 'Unidade da Federação do Brasil'},
-                           featureidkey="properties.SIGLA")
+                           featureidkey="properties.NM_ESTADO",
+                           title='Empregados de empresas privadas')
 
-fig.update_layout(margin={'r':0,'t':0,'l':0, 'b':0})
+plot_empresaprivada_uf.update_layout(margin={'r':0,'t':0,'l':0, 'b':0})
 
-st.plotly_chart(plot_ocupacao_uf, use_container_width=True)
+plot_empregado_servidorpublico = px.choropleth_mapbox(servidor_publico, 
+                           geojson=geojson_data, 
+                           locations='coluna_estado', 
+                           color='ativo_problematico',
+                           color_continuous_scale="sunsetdark",
+                           range_color=(0, max(servidor_publico['ativo_problematico'])),
+                           mapbox_style="open-street-map",
+                           zoom=2,
+                           animation_frame='ano', 
+                           center={"lat": -17.14, "lon": -57.33},
+                           opacity=1,
+                           labels={'ativo_problematico':'Ativo problemático',
+                                   'uf': 'Unidade da Federação do Brasil'},
+                           featureidkey="properties.NM_ESTADO",
+                           title='Servidores ou empregados públicos')
+
+plot_empregado_servidorpublico.update_layout(margin={'r':0,'t':0,'l':0, 'b':0})
+
+col3, col4 = st.columns((2))
+
+with col3:
+    st.plotly_chart(plot_empresaprivada_uf,use_container_width=True, height = 200, config={'scrollZoom': True})
+
+with col4:
+    st.plotly_chart(plot_empregado_servidorpublico,use_container_width=True, height = 200, config={'scrollZoom': True})
