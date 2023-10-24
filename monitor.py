@@ -159,8 +159,6 @@ plot_inflacao = px.scatter(inflacao_df_filtrado, x="carteira_ativa", y="inflacao
 
 st.plotly_chart(plot_inflacao, use_container_width=True)
 
-st.subheader('Distribuição geográfica do endividamento')
-
 divida_uf = pd.read_csv("analise_divida_uf.csv", encoding="UTF-8", delimiter=',', decimal='.')
 divida_uf["ano"] = pd.to_datetime(divida_uf["ano"], format='%Y')
 divida_uf_filtrado = divida_uf[(divida_uf["ano"] >= date1) & (divida_uf["ano"] <= date2)].copy()
@@ -189,3 +187,57 @@ plot_divida_uf.update_layout(
 )
 
 st.plotly_chart(plot_divida_uf, use_container_width=True)
+
+#Mapa
+ocupacao_ativoproblematico = pd.read_csv("cliente_uf_ocupacao_ativo_problematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+url = "https://raw.githubusercontent.com/giuliano-oliveira/geodata-br-states/main/geojson/br_states.json" #Temos que dar os créditos
+response = requests.get(url)
+geojson_data = response.json()
+
+app = Dash(__name__)
+
+app.layout = html.Div([
+    html.H1('Análise de Carteira Ativa'),
+    
+    html.Div([
+        html.Label('Selecione uma ocupação:'),
+        dcc.Dropdown(
+            id='ocupacao-dropdown',
+            options=[{'label': i, 'value': i} for i in df_total['ocupacao'].unique()],
+            value=df_total['ocupacao'].iloc[0]
+        ),
+    ]),
+    
+    dcc.Graph(id='choropleth-map')
+])
+
+@app.callback(
+    Output('choropleth-map', 'figure'),
+    [Input('ocupacao-dropdown', 'value')]
+)
+def update_choropleth(ocupacao_value):
+    
+    filtered_df = ocupacao_ativoproblematico[ocupacao_ativoproblematico['ocupacao'] == ocupacao_value]
+    
+    fig = px.choropleth_mapbox(filtered_df, 
+                               geojson=geojson_data, 
+                               locations='uf', 
+                               color='ativo_problematico',
+                               color_continuous_scale="sunsetdark",
+                               range_color=(0, max(filtered_df['ativo_problematico'])),
+                               animation_frame='ano', 
+                               mapbox_style="open-street-map",
+                               zoom=3, 
+                               center={"lat": -17.14, "lon": -57.33},
+                               opacity=1,
+                               labels={'ativo_problematico':'Carteira Ativa',
+                                       'uf': 'Unidade da Federação do Brasil'},
+                               featureidkey="properties.SIGLA")
+    
+    fig.update_layout(margin={'r':0,'t':0,'l':0, 'b':0})
+    
+    return fig
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
