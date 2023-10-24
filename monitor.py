@@ -6,6 +6,9 @@ import os
 import warnings
 import datetime
 import calendar
+import json
+import requests
+from dash import Dash, dcc, html, Input, Output
 warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:",layout="wide")
@@ -189,55 +192,34 @@ plot_divida_uf.update_layout(
 st.plotly_chart(plot_divida_uf, use_container_width=True)
 
 #Mapa
+
 ocupacao_ativoproblematico = pd.read_csv("cliente_uf_ocupacao_ativo_problematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
 url = "https://raw.githubusercontent.com/giuliano-oliveira/geodata-br-states/main/geojson/br_states.json" #Temos que dar os créditos
 response = requests.get(url)
 geojson_data = response.json()
 
-app = Dash(__name__)
+st.title('Análise de Carteira Ativa')
 
-app.layout = html.Div([
-    html.H1('Análise de Carteira Ativa'),
-    
-    html.Div([
-        html.Label('Selecione uma ocupação:'),
-        dcc.Dropdown(
-            id='ocupacao-dropdown',
-            options=[{'label': i, 'value': i} for i in df_total['ocupacao'].unique()],
-            value=df_total['ocupacao'].iloc[0]
-        ),
-    ]),
-    
-    dcc.Graph(id='choropleth-map')
-])
+ocupacao = st.selectbox('Selecione uma ocupação:', ocupacao_ativoproblematico['ocupacao'].unique())
 
-@app.callback(
-    Output('choropleth-map', 'figure'),
-    [Input('ocupacao-dropdown', 'value')]
-)
-def update_choropleth(ocupacao_value):
-    
-    filtered_df = ocupacao_ativoproblematico[ocupacao_ativoproblematico['ocupacao'] == ocupacao_value]
-    
-    fig = px.choropleth_mapbox(filtered_df, 
-                               geojson=geojson_data, 
-                               locations='uf', 
-                               color='ativo_problematico',
-                               color_continuous_scale="sunsetdark",
-                               range_color=(0, max(filtered_df['ativo_problematico'])),
-                               animation_frame='ano', 
-                               mapbox_style="open-street-map",
-                               zoom=3, 
-                               center={"lat": -17.14, "lon": -57.33},
-                               opacity=1,
-                               labels={'ativo_problematico':'Carteira Ativa',
-                                       'uf': 'Unidade da Federação do Brasil'},
-                               featureidkey="properties.SIGLA")
-    
-    fig.update_layout(margin={'r':0,'t':0,'l':0, 'b':0})
-    
-    return fig
+filtered_df = ocupacao_ativoproblematico[ocupacao_ativoproblematico['ocupacao'] == ocupacao]
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
+plot_ocupacao_uf = px.choropleth_mapbox(filtered_df, 
+                           geojson=geojson_data, 
+                           locations='uf', 
+                           color='ativo_problematico',
+                           color_continuous_scale="sunsetdark",
+                           range_color=(0, max(filtered_df['ativo_problematico'])),
+                           animation_frame='ano', 
+                           mapbox_style="open-street-map",
+                           zoom=3, 
+                           center={"lat": -17.14, "lon": -57.33},
+                           opacity=1,
+                           labels={'ativo_problematico':'Carteira Ativa',
+                                   'uf': 'Unidade da Federação do Brasil'},
+                           featureidkey="properties.SIGLA")
+
+fig.update_layout(margin={'r':0,'t':0,'l':0, 'b':0})
+
+st.plotly_chart(plot_ocupacao_uf, use_container_width=True)
