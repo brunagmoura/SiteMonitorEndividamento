@@ -194,15 +194,15 @@ with col3:
     plot_ocupacao_pf_ativoproblematico = px.choropleth_mapbox(df_ocupacao_pf_ativoproblematico_filtered, 
                                geojson=geojson_data, 
                                locations='Estado', 
-                               color='ativo_problematico_deflacionado',
+                               color='ativo_problematico/pop',
                                color_continuous_scale="sunsetdark",
-                               range_color=(0, max(df_ocupacao_pf_ativoproblematico_filtered['ativo_problematico_deflacionado'])),
+                               range_color=(0, max(df_ocupacao_pf_ativoproblematico_filtered['ativo_problematico/pop'])),
                                animation_frame='ano', 
                                mapbox_style="open-street-map",
                                zoom=1.9, 
                                center={"lat": -17.14, "lon": -57.33},
                                opacity=1,
-                               labels={'ativo_problematico':'Ativo problemático',
+                               labels={'ativo_problematico/pop':'Ativo problemático',
                                        'uf': 'Unidade da Federação do Brasil'},
                                featureidkey="properties.NM_ESTADO")
     
@@ -214,7 +214,7 @@ with col3:
         xanchor='center',
         x=0.5,   
         orientation='h',  
-        title="Ativo problemático deflacionado",
+        title="Ativo problemático deflacionado/População (2022)",
         titleside = "bottom"
     ),
         margin=dict(t=0, b=0, l=0, r=0)
@@ -238,15 +238,15 @@ with col4:
     plot_cnae_pj_ativoproblematico = px.choropleth_mapbox(df_cnae_pj_ativoproblematico_filtered, 
                                geojson=geojson_data, 
                                locations='Estado', 
-                               color='ativo_problematico_deflacionado',
+                               color='ativo_problematico/pop',
                                color_continuous_scale="sunsetdark",
-                               range_color=(0, max(df_cnae_pj_ativoproblematico_filtered['ativo_problematico_deflacionado'])),
+                               range_color=(0, max(df_cnae_pj_ativoproblematico_filtered['ativo_problematico/pop'])),
                                animation_frame='ano', 
                                mapbox_style="open-street-map",
                                zoom=1.9, 
                                center={"lat": -17.14, "lon": -57.33},
                                opacity=1,
-                               labels={'ativo_problematico':'Ativo problemático',
+                               labels={'ativo_problematico/pop':'Ativo problemático',
                                        'uf': 'Unidade da Federação do Brasil'},
                                featureidkey="properties.NM_ESTADO")
     
@@ -258,7 +258,7 @@ with col4:
         xanchor='center',
         x=0.5,   
         orientation='h',  
-        title="Ativo problemático deflacionado",
+        title="Ativo problemático deflacionado/População (2022)",
         titleside = "bottom"
     ),
         margin=dict(t=0, b=0, l=0, r=0)
