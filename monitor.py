@@ -12,10 +12,9 @@ from dash import Dash, dcc, html, Input, Output
 
 warnings.filterwarnings('ignore')
 
-st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:",layout="wide")
+st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="centered", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
 
 st.title(" :bar_chart: Monitor do endividamento dos brasileiros")
-st.markdown('<style>div.block-container{padding-top:1rem;}</style>',unsafe_allow_html=True)
 
 #Caixa para selecionar as datas
 
@@ -46,6 +45,13 @@ date2 = datetime.datetime(end_year, month_abbr.index(end_month), last_day)
 
 st.sidebar.markdown(f'<p style="text-align: center">Exibindo dados para o intervalo {date1.strftime("%Y-%m")} a {date2.strftime("%Y-%m")}.</p>', unsafe_allow_html=True)
 
+st.subheader("Os dados")
+
+st.caption('Sistema de Informações de Crédito (SCR)')
+
+st.caption('O que são operações de crédito?')
+
+st.caption('Prazo das operações de crédito')
 
 #Gráfico diferentes dívidas ao longo do tempo
 
@@ -53,8 +59,6 @@ diferentes_dividas["data_base"] = diferentes_dividas["data_base"].dt.to_period('
 diferentes_dividas = diferentes_dividas.sort_values(by="data_base")
 
 diferentes_dividas = diferentes_dividas[(diferentes_dividas["data_base"] >= date1) & (diferentes_dividas["data_base"] <= date2)].copy()
-
-st.subheader("Prazo da dívida")
 
 fig = go.Figure()
 
@@ -94,10 +98,49 @@ fig.update_layout(
     template='seaborn'
 )
 
-# Exibir o gráfico
 st.plotly_chart(fig, use_container_width=True, height=200)
 
-st.subheader("Renda vs Endividamento de longo prazo")
+st.subheader("Como a população brasileira anda se endividando?")
+
+st.caption("Distribuição do endividamento das pessoas físicas pelas modalidades de crédito")
+
+pf_ocupacao_modalidade_endividamento = pd.read_csv("pf_ocupacao_modalidade_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+pf_ocupacao_modalidade_endividamento["data_base"] = pd.to_datetime(pf_ocupacao_modalidade_endividamento["data_base"], format='%Y-%m-%d')
+
+pf_ocupacao_modalidade_endividamento_filtrado = pf_ocupacao_modalidade_endividamento[(pf_ocupacao_modalidade_endividamento["data_base"] >= date1) & (pf_ocupacao_modalidade_endividamento["data_base"] <= date2)].copy()
+
+ocupacao = st.selectbox(
+        'Selecione uma ocupação:',
+        pf_ocupacao_modalidade_endividamento_filtrado['ocupacao'].unique()
+    )
+
+pf_ocupacao_modalidade_endividamento_filtrado = pf_ocupacao_modalidade_endividamento_filtrado[pf_ocupacao_modalidade_endividamento_filtrado['ocupacao'] == ocupacao]
+    
+plot_pf_ocupacao_modalidade_endividamento = px.line(pf_ocupacao_modalidade_endividamento_filtrado, 
+             x='data_base',
+             y='carteira_ativa_deflacionada', 
+             color='modalidade')
+
+plot_pf_ocupacao_modalidade_endividamento.update_layout(
+    title_text='Carteira Ativa Deflacionada por Modalidade de Crédito e Ocupação',
+    xaxis_title='anos',
+    yaxis_title='carteira ativa deflacionada',
+    legend=dict(
+        y=-0.2,
+        traceorder='normal',
+        orientation='h',
+        font=dict(
+            size=12,
+        ),
+    ),
+    template='seaborn'
+)
+
+st.plotly_chart(plot_pf_ocupacao_modalidade_endividamento, use_container_width=True)
+
+           
+st.caption('Distribuição do endividamento por faixas de renda')
     
 desemprego_divida_lp = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
@@ -163,6 +206,8 @@ plot_desemprego_divida_lp_filtrado.update_layout(yaxis2=dict(overlaying='y',
 
 st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
 
+st.caption('Distribuição do endividamento pelos Estados')
+
 divida_uf = pd.read_csv("analise_divida_uf.csv", encoding="UTF-8", delimiter=',', decimal='.')
 divida_uf["ano"] = pd.to_datetime(divida_uf["ano"], format='%Y')
 divida_uf_filtrado = divida_uf[(divida_uf["ano"] >= date1) & (divida_uf["ano"] <= date2)].copy()
@@ -193,7 +238,7 @@ plot_divida_uf.update_layout(
 st.plotly_chart(plot_divida_uf, use_container_width=True)
 
 #Mapa endividamento PF e PJ
-st.title('Análise dos ativos problemáticos')
+st.subheader('Como anda o pagamento das dívidas?')
 
 col3, col4 = st.columns((2))
 
