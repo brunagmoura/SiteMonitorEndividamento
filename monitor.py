@@ -123,6 +123,31 @@ plot_desemprego_divida_lp_filtrado.add_trace(go.Scatter(x=desemprego_divida_lp_f
                          opacity=1,
                         line=dict(color='dimgray', width=2, dash='dot')))
 
+plot_desemprego_divida_lp_filtrado.add_shape(
+    go.layout.Shape(
+        type="line",
+        x0="2017-07-01",
+        x1="2017-07-01",
+        y0=0,
+        y1=1,
+        yref='paper',
+        line=dict(color="black", width=2)
+    )
+)
+
+plot_desemprego_divida_lp_filtrado.add_annotation(
+    go.layout.Annotation(
+        text="Reforma Trabalhista",
+        x="2017-07-01",
+        y=0,
+        yref='paper',
+        showarrow=False,
+        font=dict(color="black", size=12),
+        textangle = 90,
+        xshift=10
+    )
+)
+
 plot_desemprego_divida_lp_filtrado.update_layout(yaxis2=dict(overlaying='y',
                               side='right',
                              showgrid=False,
