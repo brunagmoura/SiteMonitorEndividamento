@@ -102,8 +102,6 @@ st.plotly_chart(fig, use_container_width=True, height=200)
 
 st.subheader("Como a população brasileira anda se endividando?")
 
-st.caption("Distribuição do endividamento das pessoas físicas pelas modalidades de crédito")
-
 pf_ocupacao_modalidade_endividamento = pd.read_csv("pf_ocupacao_modalidade_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
 pf_ocupacao_modalidade_endividamento["data_base"] = pd.to_datetime(pf_ocupacao_modalidade_endividamento["data_base"], format='%Y-%m-%d')
@@ -111,35 +109,85 @@ pf_ocupacao_modalidade_endividamento["data_base"] = pd.to_datetime(pf_ocupacao_m
 pf_ocupacao_modalidade_endividamento_filtrado = pf_ocupacao_modalidade_endividamento[(pf_ocupacao_modalidade_endividamento["data_base"] >= date1) & (pf_ocupacao_modalidade_endividamento["data_base"] <= date2)].copy()
 
 ocupacao = st.selectbox(
-        'Selecione uma ocupação:',
-        pf_ocupacao_modalidade_endividamento_filtrado['ocupacao'].unique()
+            'Selecione uma ocupação:',
+            pf_ocupacao_modalidade_endividamento_filtrado['ocupacao'].unique()
+        )
+    
+col1, col2 = st.columns((2))
+
+with col1:
+    
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento das pessoas físicas pelas modalidades de crédito</div>", unsafe_allow_html=True)
+
+    pf_ocupacao_modalidade_endividamento_filtrado = pf_ocupacao_modalidade_endividamento_filtrado[pf_ocupacao_modalidade_endividamento_filtrado['ocupacao'] == ocupacao]
+
+    plot_pf_ocupacao_modalidade_endividamento = px.line(pf_ocupacao_modalidade_endividamento_filtrado, 
+                 x='data_base',
+                 y='carteira_ativa_deflacionada', 
+                 color='modalidade')
+
+    plot_pf_ocupacao_modalidade_endividamento.update_layout(
+        xaxis_title='anos',
+        yaxis_title='carteira ativa deflacionada',
+        legend=dict(
+            y=-0.2,
+            traceorder='normal',
+            orientation='h',
+            font=dict(
+                size=12,
+            ),
+        ),
+        template='seaborn'
     )
 
-pf_ocupacao_modalidade_endividamento_filtrado = pf_ocupacao_modalidade_endividamento_filtrado[pf_ocupacao_modalidade_endividamento_filtrado['ocupacao'] == ocupacao]
-    
-plot_pf_ocupacao_modalidade_endividamento = px.line(pf_ocupacao_modalidade_endividamento_filtrado, 
-             x='data_base',
-             y='carteira_ativa_deflacionada', 
-             color='modalidade')
+    st.plotly_chart(plot_pf_ocupacao_modalidade_endividamento, use_container_width=True)
 
-plot_pf_ocupacao_modalidade_endividamento.update_layout(
-    title_text='Carteira Ativa Deflacionada por Modalidade de Crédito e Ocupação',
-    xaxis_title='anos',
-    yaxis_title='carteira ativa deflacionada',
-    legend=dict(
-        y=-0.2,
-        traceorder='normal',
-        orientation='h',
-        font=dict(
-            size=12,
-        ),
+with col2:
+    
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento das pessoas físicas pelos Estados brasileiros</div>", unsafe_allow_html=True)
+    
+    df_ocupacao_pf_ativoproblematico = pd.read_csv("df_ocupacao_pf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+    url = "https://raw.githubusercontent.com/jonates/opendata/master/arquivos_geoespaciais/unidades_da_federacao.json" #Temos que dar os créditos
+    response = requests.get(url)
+    geojson_data = response.json()
+
+
+    df_ocupacao_pf_ativoproblematico_filtered = df_ocupacao_pf_ativoproblematico[df_ocupacao_pf_ativoproblematico['ocupacao'] == ocupacao]
+
+
+    plot_ocupacao_pf_ativoproblematico = px.choropleth_mapbox(df_ocupacao_pf_ativoproblematico_filtered, 
+                               geojson=geojson_data, 
+                               locations='Estado', 
+                               color='ativo_problematico/pop',
+                               color_continuous_scale="sunsetdark",
+                               range_color=(0, max(df_ocupacao_pf_ativoproblematico_filtered['ativo_problematico/pop'])),
+                               animation_frame='ano', 
+                               mapbox_style="open-street-map",
+                               zoom=1.9, 
+                               center={"lat": -17.14, "lon": -57.33},
+                               opacity=1,
+                               labels={'ativo_problematico/pop':'Ativo problemático',
+                                       'uf': 'Unidade da Federação do Brasil'},
+                               featureidkey="properties.NM_ESTADO")
+    
+    plot_ocupacao_pf_ativoproblematico.update_layout(
+    coloraxis_colorbar=dict(
+        len=1, 
+        y=-0.25,  
+        yanchor='bottom',  
+        xanchor='center',
+        x=0.5,   
+        orientation='h',  
+        title="Ativo problemático deflacionado/População (2022)",
+        titleside = "bottom"
     ),
-    template='seaborn'
+        margin=dict(t=0, b=0, l=0, r=0)
 )
 
-st.plotly_chart(plot_pf_ocupacao_modalidade_endividamento, use_container_width=True)
-
-           
+    
+    st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True, height = 200)
+    
 st.caption('Distribuição do endividamento por faixas de renda')
     
 desemprego_divida_lp = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
@@ -240,60 +288,11 @@ st.plotly_chart(plot_divida_uf, use_container_width=True)
 #Mapa endividamento PF e PJ
 st.subheader('Como anda o pagamento das dívidas?')
 
-col3, col4 = st.columns((2))
-
-with col3:
-    
-    df_ocupacao_pf_ativoproblematico = pd.read_csv("df_ocupacao_pf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+col5, col6 = st.columns((2))
 
 
-    url = "https://raw.githubusercontent.com/jonates/opendata/master/arquivos_geoespaciais/unidades_da_federacao.json" #Temos que dar os créditos
-    response = requests.get(url)
-    geojson_data = response.json()
 
-    
-
-    ocupacao = st.selectbox(
-        'Selecione uma ocupação:',
-        df_ocupacao_pf_ativoproblematico['ocupacao'].unique()
-    )
-
-    df_ocupacao_pf_ativoproblematico_filtered = df_ocupacao_pf_ativoproblematico[df_ocupacao_pf_ativoproblematico['ocupacao'] == ocupacao]
-
-
-    plot_ocupacao_pf_ativoproblematico = px.choropleth_mapbox(df_ocupacao_pf_ativoproblematico_filtered, 
-                               geojson=geojson_data, 
-                               locations='Estado', 
-                               color='ativo_problematico/pop',
-                               color_continuous_scale="sunsetdark",
-                               range_color=(0, max(df_ocupacao_pf_ativoproblematico_filtered['ativo_problematico/pop'])),
-                               animation_frame='ano', 
-                               mapbox_style="open-street-map",
-                               zoom=1.9, 
-                               center={"lat": -17.14, "lon": -57.33},
-                               opacity=1,
-                               labels={'ativo_problematico/pop':'Ativo problemático',
-                                       'uf': 'Unidade da Federação do Brasil'},
-                               featureidkey="properties.NM_ESTADO")
-    
-    plot_ocupacao_pf_ativoproblematico.update_layout(
-    coloraxis_colorbar=dict(
-        len=1, 
-        y=-0.25,  
-        yanchor='bottom',  
-        xanchor='center',
-        x=0.5,   
-        orientation='h',  
-        title="Ativo problemático deflacionado/População (2022)",
-        titleside = "bottom"
-    ),
-        margin=dict(t=0, b=0, l=0, r=0)
-)
-
-    
-    st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True, height = 200)
-
-with col4:
+with col6:
 
     df_cnae_pj_ativoproblematico = pd.read_csv("df_cnae_pj_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
