@@ -15,7 +15,6 @@ warnings.filterwarnings('ignore')
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="centered", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
 
 st.title(" :bar_chart: Monitor do endividamento dos brasileiros")
-
 #Caixa para selecionar as datas
 
 st.sidebar.header("Qual período você deseja consultar?")
@@ -187,9 +186,9 @@ with col2:
 
     
     st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True, height = 200)
-    
-st.caption('Distribuição do endividamento por faixas de renda')
-    
+
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento por faixas de renda</div>", unsafe_allow_html=True)
+
 desemprego_divida_lp = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
 desemprego_divida_lp["data"] = pd.to_datetime(desemprego_divida_lp["data"], format='%Y-%m')
@@ -239,21 +238,93 @@ plot_desemprego_divida_lp_filtrado.add_annotation(
     )
 )
 
-plot_desemprego_divida_lp_filtrado.update_layout(yaxis2=dict(overlaying='y',
-                              side='right',
-                             showgrid=False,
-                             title = "Endividamento de longo prazo"),
-                 template="seaborn",
-                  legend=dict(x = 0.5,
-                              y = -0.3,
-                              orientation='h',
-                              xanchor='center'),
-                 xaxis=dict(showgrid=False),
-                 yaxis=dict(showgrid=False,
-                           title = "Taxa de desocupação"))
+plot_desemprego_divida_lp_filtrado.update_layout(
+    yaxis2=dict(
+        overlaying='y',
+        side='right',
+        showgrid=False,
+        title="Endividamento de longo prazo"
+    ),
+    template="seaborn",
+    legend=dict(
+        y=-0.2,
+        traceorder='normal',
+        orientation='h',
+        font=dict(
+            size=12
+        )
+    ),  
+    xaxis=dict(showgrid=False),
+    yaxis=dict(
+        showgrid=False,
+        title="Taxa de desocupação"
+    )
+)
 
 st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
 
+
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento de longo prazo por modalidades de contratação</div>", unsafe_allow_html=True)
+
+pf_modalidade_endividamentolp_inflacao = pd.read_csv("pf_modalidade_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+pf_modalidade_endividamentolp_inflacao["data"] = pd.to_datetime(pf_modalidade_endividamentolp_inflacao["data"], format='%Y-%m')
+
+pf_modalidade_endividamentolp_inflacao_filtrado = pf_modalidade_endividamentolp_inflacao[(pf_modalidade_endividamentolp_inflacao["data"] >= date1) & (pf_modalidade_endividamentolp_inflacao["data"] <= date2)].copy()
+    
+plot_pf_modalidade_endividamentolp_inflacao = go.Figure()
+
+for modalidade in pf_modalidade_endividamentolp_inflacao_filtrado['modalidade'].unique():
+    subset = pf_modalidade_endividamentolp_inflacao_filtrado[pf_modalidade_endividamentolp_inflacao_filtrado['modalidade'] == modalidade]
+    plot_pf_modalidade_endividamentolp_inflacao.add_trace(
+        go.Scatter(
+            x=subset['data'],
+            y=subset['valor_deflacionado'],
+            mode='lines',
+            name=f'{modalidade}',
+            yaxis='y2',
+            line=dict(width=2),
+            opacity=0.7
+        )
+    )
+
+plot_pf_modalidade_endividamentolp_inflacao.add_trace(
+    go.Scatter(
+        x=pf_modalidade_endividamentolp_inflacao_filtrado['data'],
+        y=pf_modalidade_endividamentolp_inflacao_filtrado['valor'], 
+        mode='lines',
+        name='Taxa de inflação',
+        opacity=1,
+        line=dict(color='dimgray', width=2, dash='dot')
+    )
+)
+
+plot_pf_modalidade_endividamentolp_inflacao.update_layout(
+    yaxis2=dict(
+        overlaying='y',
+        side='right',
+        showgrid=False,
+        title="Endividamento de longo prazo"
+    ),
+    template="seaborn",
+    legend=dict(
+        x=0.5,
+        y=-0.2,
+        orientation='h',
+        xanchor='center',
+        font=dict(size=12)
+    ),
+    xaxis=dict(showgrid=False),
+    yaxis=dict(
+        showgrid=False,
+        title="Taxa de inflação"
+    ),
+    margin=dict(t=0, b=0, l=0, r=0)
+)
+
+st.plotly_chart(plot_pf_modalidade_endividamentolp_inflacao, use_container_width=True)
+
+    
 st.caption('Distribuição do endividamento pelos Estados')
 
 #Mapa endividamento PF e PJ
