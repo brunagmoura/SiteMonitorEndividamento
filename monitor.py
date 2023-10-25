@@ -286,7 +286,37 @@ plot_divida_uf.update_layout(
 st.plotly_chart(plot_divida_uf, use_container_width=True)
 
 #Mapa endividamento PF e PJ
-st.subheader('Como anda o pagamento das dívidas?')
+st.subheader('Como as empresas andam se financiando?')
+
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Micro e pequenas empresas: endividamento X ativo problemático</div>", unsafe_allow_html=True)
+
+df_micro_peq_problematico = pd.read_csv("df_micro_peq_problematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+df_micro_peq_problematico["data_base"] = pd.to_datetime(df_micro_peq_problematico["data_base"], format='%Y-%m-%d')
+
+df_micro_peq_problematico_filtrado = df_micro_peq_problematico[(df_micro_peq_problematico["data_base"] >= date1) & (df_micro_peq_problematico["data_base"] <= date2)].copy()
+
+df_micro_peq_problematico = df_micro_peq_problematico.rename(columns={
+    'curto_prazo_deflacionado': 'Endividamento de Curto Prazo',
+    'ativo_problematico_deflacionado': 'Ativo Problemático'
+})
+
+plot_micro_peq_problematico = px.bar(df_micro_peq_problematico, 
+             x='data_base', 
+             y=['Endividamento de Curto Prazo', 'Ativo Problemático'],
+             facet_col='porte', 
+             labels={'data_base': ''},
+             template="seaborn")
+
+plot_micro_peq_problematico.update_layout(
+    yaxis_title="Endividamento vs Ativo problemático",
+    legend_title_text='',
+    legend=dict(x=0.5, y=-0.15, xanchor='center', yanchor='top', orientation = 'h'),
+        xaxis=dict(dtick="M24"),
+        xaxis2=dict(dtick="M24")
+)
+
+st.plotly_chart(plot_micro_peq_problematico, use_container_width=True)
 
 col5, col6 = st.columns((2))
 
