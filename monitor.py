@@ -256,39 +256,36 @@ st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
 
 st.caption('Distribuição do endividamento pelos Estados')
 
-divida_uf = pd.read_csv("analise_divida_uf.csv", encoding="UTF-8", delimiter=',', decimal='.')
-divida_uf["ano"] = pd.to_datetime(divida_uf["ano"], format='%Y')
-divida_uf_filtrado = divida_uf[(divida_uf["ano"] >= date1) & (divida_uf["ano"] <= date2)].copy()
-
-divida_uf_filtrado['ano'] = divida_uf_filtrado['ano'].dt.year
-
-divida_uf_filtrado['ano'] = divida_uf_filtrado['ano'].astype('object')
-
-plot_divida_uf = px.bar(divida_uf_filtrado, 
-                        x='uf', 
-                        y='carteira_ativa',
-                        title='Carteira Ativa por UF e Ano',
-                        labels={'carteira_ativa':'Carteira Ativa', 'uf_ano':'UF e Ano'},
-                        color='ano',
-                        barmode = 'group',
-                        template="seaborn")
-plot_divida_uf.update_layout(
-    legend=dict(
-        y = -0.2,
-        traceorder='normal',
-        orientation='h',
-        font=dict(
-            size=12,
-        ),
-    )
-)
-
-st.plotly_chart(plot_divida_uf, use_container_width=True)
-
 #Mapa endividamento PF e PJ
 st.subheader('Como as empresas andam se financiando?')
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Micro e pequenas empresas: endividamento X ativo problemático</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Modalidades de contratação de operações de crédito escolhidas pelas micro e pequenas empresas</div>", unsafe_allow_html=True)
+
+pj_porte_modalidade_endividamentocp = pd.read_csv("pj_porte_modalidade_endividamentocp.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+pj_porte_modalidade_endividamentocp["data_base"] = pd.to_datetime(pj_porte_modalidade_endividamentocp["data_base"], format='%Y-%m')
+
+pj_porte_modalidade_endividamentocp_filtrado = pj_porte_modalidade_endividamentocp[(pj_porte_modalidade_endividamentocp["data_base"] >= date1) & (pj_porte_modalidade_endividamentocp["data_base"] <= date2)].copy()
+
+plot_pj_porte_modalidade_endividamentocp = px.line(pj_porte_modalidade_endividamentocp_filtrado, 
+             x='data_base', 
+             y='curto_prazo_deflacionado',
+              color = 'modalidade',
+             facet_col='porte',
+             title='',
+             labels={'data_base': '', 'curto_prazo_deflacionado': 'Endividamento de curto prazo deflacionado'},
+             template="seaborn",
+             category_orders={"porte": ["Empresa de pequeno porte", "Microempresa"]})
+
+plot_pj_porte_modalidade_endividamentocp.update_layout(
+    yaxis_title="Endividamento de curto prazo deflacionado",
+    legend_title_text='',
+    legend=dict(x=0.5, y=-0.17, xanchor='center', yanchor='top', orientation = 'h')
+)
+
+st.plotly_chart(plot_pj_porte_modalidade_endividamentocp, use_container_width=True)
+
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Micro e pequenas empresas: endividamento para capital de giro x ativo problemático</div>", unsafe_allow_html=True)
 
 df_micro_peq_problematico = pd.read_csv("df_micro_peq_problematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
@@ -309,7 +306,7 @@ plot_micro_peq_problematico = px.bar(df_micro_peq_problematico,
              template="seaborn")
 
 plot_micro_peq_problematico.update_layout(
-    yaxis_title="Endividamento vs Ativo problemático",
+    yaxis_title="Endividamento de curto prazo e ativo problemático deflacionados",
     legend_title_text='',
     legend=dict(x=0.5, y=-0.15, xanchor='center', yanchor='top', orientation = 'h'),
         xaxis=dict(dtick="M24"),
