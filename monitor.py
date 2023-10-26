@@ -266,64 +266,129 @@ st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento de longo prazo por modalidades de contratação</div>", unsafe_allow_html=True)
 
-pf_modalidade_endividamentolp_inflacao = pd.read_csv("pf_modalidade_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
+col3, col4 = st.columns((2))
 
-pf_modalidade_endividamentolp_inflacao["data"] = pd.to_datetime(pf_modalidade_endividamentolp_inflacao["data"], format='%Y-%m')
+with col3:
+    pf_modalidade_endividamentolp_inflacao = pd.read_csv("pf_modalidade_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-pf_modalidade_endividamentolp_inflacao_filtrado = pf_modalidade_endividamentolp_inflacao[(pf_modalidade_endividamentolp_inflacao["data"] >= date1) & (pf_modalidade_endividamentolp_inflacao["data"] <= date2)].copy()
-    
-plot_pf_modalidade_endividamentolp_inflacao = go.Figure()
+    pf_modalidade_endividamentolp_inflacao["data"] = pd.to_datetime(pf_modalidade_endividamentolp_inflacao["data"], format='%Y-%m')
 
-for modalidade in pf_modalidade_endividamentolp_inflacao_filtrado['modalidade'].unique():
-    subset = pf_modalidade_endividamentolp_inflacao_filtrado[pf_modalidade_endividamentolp_inflacao_filtrado['modalidade'] == modalidade]
+    pf_modalidade_endividamentolp_inflacao_filtrado = pf_modalidade_endividamentolp_inflacao[(pf_modalidade_endividamentolp_inflacao["data"] >= date1) & (pf_modalidade_endividamentolp_inflacao["data"] <= date2)].copy()
+
+    plot_pf_modalidade_endividamentolp_inflacao = go.Figure()
+
+    for modalidade in pf_modalidade_endividamentolp_inflacao_filtrado['modalidade'].unique():
+        subset = pf_modalidade_endividamentolp_inflacao_filtrado[pf_modalidade_endividamentolp_inflacao_filtrado['modalidade'] == modalidade]
+        plot_pf_modalidade_endividamentolp_inflacao.add_trace(
+            go.Scatter(
+                x=subset['data'],
+                y=subset['valor_deflacionado'],
+                mode='lines',
+                name=f'{modalidade}',
+                line=dict(width=2),
+                opacity=0.7
+            )
+        )
+
     plot_pf_modalidade_endividamentolp_inflacao.add_trace(
         go.Scatter(
-            x=subset['data'],
-            y=subset['valor_deflacionado'],
+            x=pf_modalidade_endividamentolp_inflacao_filtrado['data'],
+            y=pf_modalidade_endividamentolp_inflacao_filtrado['valor'], 
             mode='lines',
-            name=f'{modalidade}',
+            name='Taxa de inflação',
+            opacity=1,
             yaxis='y2',
-            line=dict(width=2),
-            opacity=0.7
+            line=dict(color='dimgray', width=2, dash='dot')
         )
     )
 
-plot_pf_modalidade_endividamentolp_inflacao.add_trace(
-    go.Scatter(
-        x=pf_modalidade_endividamentolp_inflacao_filtrado['data'],
-        y=pf_modalidade_endividamentolp_inflacao_filtrado['valor'], 
-        mode='lines',
-        name='Taxa de inflação',
-        opacity=1,
-        line=dict(color='dimgray', width=2, dash='dot')
+    plot_pf_modalidade_endividamentolp_inflacao.update_layout(
+        yaxis2=dict(
+            overlaying='y',
+            side='right',
+            showgrid=False,
+            title="Taxa de inflação"
+        ),
+        template="seaborn",
+        legend=dict(
+            x=0.5,
+            y=-0.2,
+            orientation='h',
+            xanchor='center',
+            font=dict(size=12)
+        ),
+        xaxis=dict(showgrid=False, dtick="M24"),
+        xaxis2=dict(dtick="M24"),
+        yaxis=dict(
+            showgrid=False,
+            title=""
+        ),
+        margin=dict(t=0, b=0, l=0, r=0)
     )
-)
 
-plot_pf_modalidade_endividamentolp_inflacao.update_layout(
-    yaxis2=dict(
-        overlaying='y',
-        side='right',
-        showgrid=False,
-        title="Endividamento de longo prazo"
-    ),
-    template="seaborn",
-    legend=dict(
-        x=0.5,
-        y=-0.2,
-        orientation='h',
-        xanchor='center',
-        font=dict(size=12)
-    ),
-    xaxis=dict(showgrid=False),
-    yaxis=dict(
-        showgrid=False,
-        title="Taxa de inflação"
-    ),
-    margin=dict(t=0, b=0, l=0, r=0)
-)
+    st.plotly_chart(plot_pf_modalidade_endividamentolp_inflacao, use_container_width=True)
 
-st.plotly_chart(plot_pf_modalidade_endividamentolp_inflacao, use_container_width=True)
+with col4:
 
+    df_juros_divida_modalidade = pd.read_csv("df_juros_divida_modalidade.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+    df_juros_divida_modalidade["data"] = pd.to_datetime(df_juros_divida_modalidade["data"], format='%Y-%m')
+
+    df_juros_divida_modalidade_filtrado = df_juros_divida_modalidade[(df_juros_divida_modalidade["data"] >= date1) & (df_juros_divida_modalidade["data"] <= date2)].copy()
+
+    plot_df_juros_divida_modalidade = go.Figure()
+
+    for modalidade in df_juros_divida_modalidade_filtrado['modalidade'].unique():
+        subset = df_juros_divida_modalidade_filtrado[df_juros_divida_modalidade_filtrado['modalidade'] == modalidade]
+        plot_df_juros_divida_modalidade.add_trace(
+            go.Scatter(
+                x=subset['data'],
+                y=subset['longo_prazo_deflacionado'],
+                mode='lines',
+                name=f'{modalidade}',
+                line=dict(width=2),
+                opacity=0.7
+            )
+        )
+
+    plot_df_juros_divida_modalidade.add_trace(
+        go.Scatter(
+            x=df_juros_divida_modalidade_filtrado['data'],
+            y=df_juros_divida_modalidade_filtrado['valor'], 
+            mode='lines',
+            name='Taxa de juros média para PF',
+            opacity=1,
+            yaxis='y2',
+            line=dict(color='dimgray', width=2, dash='dot')
+        )
+    )
+
+    plot_df_juros_divida_modalidade.update_layout(
+        yaxis2=dict(
+            overlaying='y',
+            side='right',
+            showgrid=False,
+            title="Taxa de juros média para PF"
+        ),
+        template="seaborn",
+        legend=dict(
+            x=0.5,
+            y=-0.2,
+            orientation='h',
+            xanchor='center',
+            yanchor='top',
+            font=dict(size=12)
+        ),
+        xaxis=dict(showgrid=False, dtick="M24"),
+        xaxis2=dict(dtick="M24"),
+        yaxis=dict(
+            showgrid=False,
+            title=""
+        ),
+        margin=dict(t=0, b=0, l=0, r=0)
+    )
+
+    st.plotly_chart(plot_df_juros_divida_modalidade, use_container_width=True)
     
 st.caption('Distribuição do endividamento pelos Estados')
 
@@ -388,8 +453,6 @@ st.plotly_chart(plot_micro_peq_problematico, use_container_width=True)
 
 col5, col6 = st.columns((2))
 
-
-
 with col6:
 
     df_cnae_pj_ativoproblematico = pd.read_csv("df_cnae_pj_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
@@ -433,6 +496,31 @@ with col6:
 
     
     st.plotly_chart(plot_cnae_pj_ativoproblematico,use_container_width=True, height = 200)
+
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento nas principais áreas de atuação das empresas do setor de agricultura, pecuária, produção florestal, pesca e aquicultura em dezembro-2022</div>", unsafe_allow_html=True)
+
+pj_cnaesecao_cnaesubclasse_endividamento = pd.read_csv("pj_cnaesecao_cnaesubclasse_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+pj_cnaesecao_cnaesubclasse_endividamento["data_base"] = pd.to_datetime(pj_cnaesecao_cnaesubclasse_endividamento["data_base"], format='%Y-%m')
+
+pj_cnaesecao_cnaesubclasse_endividamento_filtrado = pj_cnaesecao_cnaesubclasse_endividamento[(pj_cnaesecao_cnaesubclasse_endividamento["data_base"] >= date1) & (pj_cnaesecao_cnaesubclasse_endividamento["data_base"] <= date2)].copy()
+
+plot_pj_cnaesecao_cnaesubclasse_endividamento = px.treemap(pj_cnaesecao_cnaesubclasse_endividamento_filtrado, 
+                 path=['cnae_secao', 'cnae_subclasse'],
+                 values='valor_deflacionado')
+
+plot_pj_cnaesecao_cnaesubclasse_endividamento.update_layout(title='',
+                  margin=dict(t=0, l=0, r=0, b=0),
+                 template = "seaborn")
+
+plot_pj_cnaesecao_cnaesubclasse_endividamento.update_traces(textinfo='label+percent entry',
+                 marker_line_width = 1,
+                 hovertemplate='%{label} <br> $%{value:,.2f} <br> Percentual: %{percentRoot:.2%}',
+                 textposition="top left",
+                 textfont_size = 12,
+                 textfont_color = 'white')
+
+st.plotly_chart(plot_pj_cnaesecao_cnaesubclasse_endividamento,use_container_width=True, height = 200)
 
 st.subheader("Como esse assunto vem sendo tratado pelos legisladores?")
 
