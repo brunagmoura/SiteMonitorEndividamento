@@ -433,3 +433,18 @@ with col6:
 
     
     st.plotly_chart(plot_cnae_pj_ativoproblematico,use_container_width=True, height = 200)
+
+st.subheader("Como esse assunto vem sendo tratado pelos legisladores?")
+
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Palavras em destaque nos projetos leis da Câmara dos Deputados - 2013 a 2023</div>", unsafe_allow_html=True)
+
+col10, col11, col12 = st.columns([1, 3, 1])
+
+with col10:
+    st.write(' ')
+
+with col11:
+    st.image("nuvem_palavras_projetos_leis_2012_2023.svg", caption='', use_column_width=True)
+
+with col12:
+    st.write(' ')
