@@ -12,7 +12,7 @@ from dash import Dash, dcc, html, Input, Output
 
 warnings.filterwarnings('ignore')
 
-st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="centered", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
+st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
 
 st.title(" :bar_chart: Monitor do endividamento dos brasileiros")
 #Caixa para selecionar as datas
@@ -243,7 +243,7 @@ with col21:
     plot_rendimento_modalidade_noperacoes.update_layout(
         title_text='',
         xaxis_title='',
-        yaxis_title='Endividamento de longo prazo',
+        yaxis_title='Número de operações',
         template="seaborn",
         legend=dict(
             x=0.5,
@@ -397,7 +397,6 @@ df_juros_inflacao_modalidade_filtrado = df_juros_inflacao_modalidade[(df_juros_i
 def create_figure(yaxis_column_name):
     plot_juros_inflacao_modalidade = go.Figure()
 
-    # Adicionando linhas de todas as modalidades ao eixo y2
     for modalidade in df_juros_inflacao_modalidade_filtrado['modalidade'].unique():
         subset = df_juros_inflacao_modalidade_filtrado[df_juros_inflacao_modalidade_filtrado['modalidade'] == modalidade]
         plot_juros_inflacao_modalidade.add_trace(go.Scatter(x=subset['data_base'],
@@ -408,7 +407,6 @@ def create_figure(yaxis_column_name):
                                      opacity=0.7,
                                      line=dict(width=2)))
 
-    # Adicionando a coluna selecionada ao eixo y principal
     plot_juros_inflacao_modalidade.add_trace(go.Scatter(x=df_juros_inflacao_modalidade_filtrado['data_base'],
                                  y=df_juros_inflacao_modalidade_filtrado[yaxis_column_name],
                                  mode='lines',
@@ -445,46 +443,7 @@ option = st.selectbox(
         ('IPCA', 'Taxa média mensal de juros - PF')
     )
     
-noperacoes = pd.read_csv("df_agrupado_noperacoes.csv", encoding="UTF-8", delimiter=',', decimal='.')
-
-noperacoes["data_base"] = pd.to_datetime(noperacoes["data_base"], format='%Y-%m')
-
-noperacoes_filtrado = noperacoes[(noperacoes["data_base"] >= date1) & (noperacoes["data_base"] <= date2)].copy()
-
-plot_noperacoes_filtrado = px.line(noperacoes, 
-                 x='data_base',
-                 y='numero_de_operacoes', 
-                 color='modalidade')
-
-plot_noperacoes_filtrado.update_layout(
-    xaxis=dict(
-        title='', 
-        showgrid=False  # Desativa a grade no eixo X
-    ),
-    yaxis=dict(
-        title='Número de Operações', 
-        showgrid=False  # Desativa a grade no eixo Y
-    ),
-    legend=dict(
-        y=-0.2,
-        traceorder='normal',
-        orientation='h',
-        font=dict(size=12),
-        title=None
-    ),
-    template='seaborn',
-    title_text='',
-    margin=dict(t=0, l=0, r=0, b=0)
-)
-    
-
-col8, col9 = st.columns([2, 1])
-
-with col8:
-    st.plotly_chart(create_figure(option), use_container_width=True)
-    
-with col9:
-    st.plotly_chart(plot_noperacoes_filtrado, use_container_width=True)
+st.plotly_chart(create_figure(option), use_container_width=True)
     
 st.caption('Distribuição do endividamento pelos Estados')
 
