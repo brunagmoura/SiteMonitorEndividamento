@@ -302,6 +302,60 @@ plot_desemprego_divida_lp_filtrado.update_layout(
 
 st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
 
+pf_porte_endividamentolp_inflacao = pd.read_csv("pf_porte_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+pf_porte_endividamentolp_inflacao["data"] = pd.to_datetime(desemprego_divida_lp["data"], format='%Y-%m')
+
+pf_porte_endividamentolp_inflacao_filtrado = pf_porte_endividamentolp_inflacao[(pf_porte_endividamentolp_inflacao["data"] >= date1) & (pf_porte_endividamentolp_inflacao["data"] <= date2)].copy()
+
+plot_pf_porte_endividamentolp_inflacao = go.Figure()
+
+for porte in pf_porte_endividamentolp_inflacao_filtrado['porte'].unique():
+    subset = pf_porte_endividamentolp_inflacao_filtrado[pf_porte_endividamentolp_inflacao_filtrado['porte'] == porte]
+    
+    plot_pf_porte_endividamentolp_inflacao.add_trace(go.Scatter(
+        x=subset['data_divida'],
+        y=subset['valor_deflacionado'],
+        mode='lines',
+        opacity=0.7,
+        name=f'{porte}',
+        yaxis='y2'
+    ))
+
+plot_pf_porte_endividamentolp_inflacao.add_trace(go.Scatter(
+    x=pf_porte_endividamentolp_inflacao_filtrado['data_divida'],
+    y=pf_porte_endividamentolp_inflacao_filtrado['valor'],
+    opacity=1,
+    line=dict(color='dimgray', width=2, dash='dot'),
+    mode='lines',
+    name='IPCA'
+))
+
+plot_pf_porte_endividamentolp_inflacao.update_layout(
+    yaxis=dict(
+        title="IPCA",
+        showgrid=False
+    ),
+    yaxis2=dict(
+        title="Endividamento de longo prazo",
+        overlaying='y',
+        side='right',
+        showgrid=False
+    ),
+    xaxis=dict(
+        showgrid=False
+    ),
+    legend=dict(
+        y=-0.2,
+        traceorder='normal',
+        orientation='h',
+        font=dict(size=12)
+    ),
+    template="seaborn"
+)
+
+st.plotly_chart(plot_pf_porte_endividamentolp_inflacao, use_container_width=True)
+
 st.caption('Por eventos macroeconômicos')
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento de longo prazo por modalidades de contratação</div>", unsafe_allow_html=True)
