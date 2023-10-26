@@ -101,6 +101,8 @@ st.plotly_chart(fig, use_container_width=True, height=200)
 
 st.subheader("Como a população brasileira anda se endividando?")
 
+st.caption('Por ocupação')
+
 pf_ocupacao_modalidade_endividamento = pd.read_csv("pf_ocupacao_modalidade_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
 pf_ocupacao_modalidade_endividamento["data_base"] = pd.to_datetime(pf_ocupacao_modalidade_endividamento["data_base"], format='%Y-%m-%d')
@@ -187,7 +189,44 @@ with col2:
     
     st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True, height = 200)
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento por faixas de renda</div>", unsafe_allow_html=True)
+st.caption('Por rendimento')
+
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento de longo prazo por faixas de renda</div>", unsafe_allow_html=True)
+
+pf_porte_endividamentolp = pd.read_csv("pf_porte_endividamentolp.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+pf_porte_endividamentolp["data_base"] = pd.to_datetime(pf_porte_endividamentolp["data_base"], format='%Y-%m-%d')
+
+pf_porte_endividamentolp_filtrado = pf_porte_endividamentolp[(pf_porte_endividamentolp["data_base"] >= date1) & (pf_porte_endividamentolp["data_base"] <= date2)].copy()
+
+porte = st.selectbox(
+    "Selecione para qual rendimento você deseja consultar",
+    pf_porte_endividamentolp['porte'].unique()
+)
+
+pf_porte_endividamentolp_filtrado = pf_porte_endividamentolp_filtrado[pf_porte_endividamentolp_filtrado['porte'] == porte]
+
+plot_porte_endividamentolp = px.line(pf_porte_endividamentolp_filtrado, 
+              x='data_base', 
+              y='valor_deflacionado', 
+              color='modalidade')
+
+plot_porte_endividamentolp.update_layout(
+    title_text='',
+    xaxis_title='',
+    yaxis_title='Endividamento de longo prazo',
+    template="seaborn",
+    legend=dict(
+        x=0.5,
+        y=-0.3,
+        orientation='h',
+        xanchor='center'
+    ),
+    xaxis=dict(showgrid=False),
+    yaxis=dict(showgrid=False)
+)
+
+st.plotly_chart(plot_porte_endividamentolp, use_container_width=True)
 
 desemprego_divida_lp = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
@@ -263,6 +302,7 @@ plot_desemprego_divida_lp_filtrado.update_layout(
 
 st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
 
+st.caption('Por eventos macroeconômicos')
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento de longo prazo por modalidades de contratação</div>", unsafe_allow_html=True)
 
@@ -322,7 +362,7 @@ option = st.selectbox(
     ('IPCA', 'Taxa média mensal de juros - PF')
 )
 
-st.plotly_chart(create_figure(option))
+st.plotly_chart(create_figure(option), use_container_width=True)
     
 st.caption('Distribuição do endividamento pelos Estados')
 
