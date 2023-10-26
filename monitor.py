@@ -266,129 +266,63 @@ st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento de longo prazo por modalidades de contratação</div>", unsafe_allow_html=True)
 
-col3, col4 = st.columns((2))
+df_juros_inflacao_modalidade = pd.read_csv("df_juros_inflacao_modalidade.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-with col3:
-    pf_modalidade_endividamentolp_inflacao = pd.read_csv("pf_modalidade_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
+df_juros_inflacao_modalidade["data_base"] = pd.to_datetime(df_juros_inflacao_modalidade["data_base"], format='%Y-%m')
 
-    pf_modalidade_endividamentolp_inflacao["data"] = pd.to_datetime(pf_modalidade_endividamentolp_inflacao["data"], format='%Y-%m')
+df_juros_inflacao_modalidade_filtrado = df_juros_inflacao_modalidade[(df_juros_inflacao_modalidade["data_base"] >= date1) & (df_juros_inflacao_modalidade["data_base"] <= date2)].copy()
 
-    pf_modalidade_endividamentolp_inflacao_filtrado = pf_modalidade_endividamentolp_inflacao[(pf_modalidade_endividamentolp_inflacao["data"] >= date1) & (pf_modalidade_endividamentolp_inflacao["data"] <= date2)].copy()
+def create_figure(yaxis_column_name):
+    plot_juros_inflacao_modalidade = go.Figure()
 
-    plot_pf_modalidade_endividamentolp_inflacao = go.Figure()
+    # Adicionando linhas de todas as modalidades ao eixo y2
+    for modalidade in df_juros_inflacao_modalidade_filtrado['modalidade'].unique():
+        subset = df_juros_inflacao_modalidade_filtrado[df_juros_inflacao_modalidade_filtrado['modalidade'] == modalidade]
+        plot_juros_inflacao_modalidade.add_trace(go.Scatter(x=subset['data_base'],
+                                 y=subset['longo_prazo_deflacionado'],
+                                 mode='lines',
+                                 name=f'{modalidade}',
+                                 yaxis='y2',
+                                opacity = 0.7,
+                                 line=dict(width=2)))
 
-    for modalidade in pf_modalidade_endividamentolp_inflacao_filtrado['modalidade'].unique():
-        subset = pf_modalidade_endividamentolp_inflacao_filtrado[pf_modalidade_endividamentolp_inflacao_filtrado['modalidade'] == modalidade]
-        plot_pf_modalidade_endividamentolp_inflacao.add_trace(
-            go.Scatter(
-                x=subset['data'],
-                y=subset['valor_deflacionado'],
-                mode='lines',
-                name=f'{modalidade}',
-                line=dict(width=2),
-                opacity=0.7
-            )
-        )
+    # Adicionando a coluna selecionada ao eixo y principal
+    plot_juros_inflacao_modalidade.add_trace(go.Scatter(x=df_juros_inflacao_modalidade_filtrado['data_base'],
+                             y=df_juros_inflacao_modalidade_filtrado[yaxis_column_name],
+                             mode='lines',
+                            opacity=1,
+                             name=yaxis_column_name,
+                             line=dict(color='dimgray', width=2, dash='dot')))
 
-    plot_pf_modalidade_endividamentolp_inflacao.add_trace(
-        go.Scatter(
-            x=pf_modalidade_endividamentolp_inflacao_filtrado['data'],
-            y=pf_modalidade_endividamentolp_inflacao_filtrado['valor'], 
-            mode='lines',
-            name='Taxa de inflação',
-            opacity=1,
-            yaxis='y2',
-            line=dict(color='dimgray', width=2, dash='dot')
-        )
-    )
-
-    plot_pf_modalidade_endividamentolp_inflacao.update_layout(
+    plot_juros_inflacao_modalidade.update_layout(
         yaxis2=dict(
             overlaying='y',
             side='right',
             showgrid=False,
-            title="Taxa de inflação"
+            title="Endividamento de longo prazo"
         ),
         template="seaborn",
         legend=dict(
             x=0.5,
             y=-0.2,
             orientation='h',
-            xanchor='center',
-            font=dict(size=12)
+            xanchor='center'
         ),
-        xaxis=dict(showgrid=False, dtick="M24"),
-        xaxis2=dict(dtick="M24"),
+        xaxis=dict(showgrid=False),
         yaxis=dict(
             showgrid=False,
-            title=""
-        ),
-        margin=dict(t=0, b=0, l=0, r=0)
-    )
-
-    st.plotly_chart(plot_pf_modalidade_endividamentolp_inflacao, use_container_width=True)
-
-with col4:
-
-    df_juros_divida_modalidade = pd.read_csv("df_juros_divida_modalidade.csv", encoding="UTF-8", delimiter=',', decimal='.')
-
-    df_juros_divida_modalidade["data"] = pd.to_datetime(df_juros_divida_modalidade["data"], format='%Y-%m')
-
-    df_juros_divida_modalidade_filtrado = df_juros_divida_modalidade[(df_juros_divida_modalidade["data"] >= date1) & (df_juros_divida_modalidade["data"] <= date2)].copy()
-
-    plot_df_juros_divida_modalidade = go.Figure()
-
-    for modalidade in df_juros_divida_modalidade_filtrado['modalidade'].unique():
-        subset = df_juros_divida_modalidade_filtrado[df_juros_divida_modalidade_filtrado['modalidade'] == modalidade]
-        plot_df_juros_divida_modalidade.add_trace(
-            go.Scatter(
-                x=subset['data'],
-                y=subset['longo_prazo_deflacionado'],
-                mode='lines',
-                name=f'{modalidade}',
-                line=dict(width=2),
-                opacity=0.7
-            )
-        )
-
-    plot_df_juros_divida_modalidade.add_trace(
-        go.Scatter(
-            x=df_juros_divida_modalidade_filtrado['data'],
-            y=df_juros_divida_modalidade_filtrado['valor'], 
-            mode='lines',
-            name='Taxa de juros média para PF',
-            opacity=1,
-            yaxis='y2',
-            line=dict(color='dimgray', width=2, dash='dot')
+            title=yaxis_column_name
         )
     )
 
-    plot_df_juros_divida_modalidade.update_layout(
-        yaxis2=dict(
-            overlaying='y',
-            side='right',
-            showgrid=False,
-            title="Taxa de juros média para PF"
-        ),
-        template="seaborn",
-        legend=dict(
-            x=0.5,
-            y=-0.2,
-            orientation='h',
-            xanchor='center',
-            yanchor='top',
-            font=dict(size=12)
-        ),
-        xaxis=dict(showgrid=False, dtick="M24"),
-        xaxis2=dict(dtick="M24"),
-        yaxis=dict(
-            showgrid=False,
-            title=""
-        ),
-        margin=dict(t=0, b=0, l=0, r=0)
-    )
+    return plot_juros_inflacao_modalidade
 
-    st.plotly_chart(plot_df_juros_divida_modalidade, use_container_width=True)
+option = st.selectbox(
+    'Selecione o indicador macroeconômico que você deseja adicionar à série',
+    ('IPCA', 'Taxa média mensal de juros - PF')
+)
+
+st.plotly_chart(create_figure(option))
     
 st.caption('Distribuição do endividamento pelos Estados')
 
