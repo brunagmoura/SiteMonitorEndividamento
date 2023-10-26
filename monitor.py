@@ -193,41 +193,69 @@ st.caption('Por rendimento')
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8em;'>Distribuição do endividamento de longo prazo por faixas de renda</div>", unsafe_allow_html=True)
 
-pf_porte_endividamentolp = pd.read_csv("pf_porte_endividamentolp.csv", encoding="UTF-8", delimiter=',', decimal='.')
+pf_rendimento_modalidade_noperacoes_endividamento = pd.read_csv("pf_rendimento_modalidade_noperacoes_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-pf_porte_endividamentolp["data_base"] = pd.to_datetime(pf_porte_endividamentolp["data_base"], format='%Y-%m-%d')
+pf_rendimento_modalidade_noperacoes_endividamento["data_base"] = pd.to_datetime(pf_rendimento_modalidade_noperacoes_endividamento["data_base"], format='%Y-%m-%d')
 
-pf_porte_endividamentolp_filtrado = pf_porte_endividamentolp[(pf_porte_endividamentolp["data_base"] >= date1) & (pf_porte_endividamentolp["data_base"] <= date2)].copy()
+pf_rendimento_modalidade_noperacoes_endividamento_filtrado = pf_rendimento_modalidade_noperacoes_endividamento[(pf_rendimento_modalidade_noperacoes_endividamento["data_base"] >= date1) & (pf_rendimento_modalidade_noperacoes_endividamento["data_base"] <= date2)].copy()
 
 porte = st.selectbox(
     "Selecione para qual rendimento você deseja consultar",
-    pf_porte_endividamentolp['porte'].unique()
+    pf_rendimento_modalidade_noperacoes_endividamento_filtrado['porte'].unique()
 )
 
-pf_porte_endividamentolp_filtrado = pf_porte_endividamentolp_filtrado[pf_porte_endividamentolp_filtrado['porte'] == porte]
+col20, col21 = st.columns((2))
 
-plot_porte_endividamentolp = px.line(pf_porte_endividamentolp_filtrado, 
-              x='data_base', 
-              y='valor_deflacionado', 
-              color='modalidade')
+with col20:
+    pf_rendimento_modalidade_noperacoes_endividamento_filtrado = pf_rendimento_modalidade_noperacoes_endividamento_filtrado[pf_rendimento_modalidade_noperacoes_endividamento_filtrado['porte'] == porte]
 
-plot_porte_endividamentolp.update_layout(
-    title_text='',
-    xaxis_title='',
-    yaxis_title='Endividamento de longo prazo',
-    template="seaborn",
-    legend=dict(
-        x=0.5,
-        y=-0.3,
-        orientation='h',
-        xanchor='center'
-    ),
-    xaxis=dict(showgrid=False),
-    yaxis=dict(showgrid=False)
-)
+    plot_rendimento_modalidade_noperacoes = px.line(pf_rendimento_modalidade_noperacoes_endividamento_filtrado, 
+                  x='data_base', 
+                  y='longo_prazo_deflacionado', 
+                  color='modalidade')
 
-st.plotly_chart(plot_porte_endividamentolp, use_container_width=True)
+    plot_rendimento_modalidade_noperacoes.update_layout(
+        title_text='',
+        xaxis_title='',
+        yaxis_title='Endividamento de longo prazo',
+        template="seaborn",
+        legend=dict(
+            x=0.5,
+            y=-0.3,
+            orientation='h',
+            xanchor='center'
+        ),
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=False)
+    )
 
+    st.plotly_chart(plot_rendimento_modalidade_noperacoes, use_container_width=True)
+
+with col21:
+
+    pf_rendimento_modalidade_noperacoes_endividamento_filtrado = pf_rendimento_modalidade_noperacoes_endividamento_filtrado[pf_rendimento_modalidade_noperacoes_endividamento_filtrado['porte'] == porte]
+
+    plot_rendimento_modalidade_noperacoes = px.line(pf_rendimento_modalidade_noperacoes_endividamento_filtrado, 
+                  x='data_base', 
+                  y='numero_de_operacoes', 
+                  color='modalidade')
+
+    plot_rendimento_modalidade_noperacoes.update_layout(
+        title_text='',
+        xaxis_title='',
+        yaxis_title='Endividamento de longo prazo',
+        template="seaborn",
+        legend=dict(
+            x=0.5,
+            y=-0.3,
+            orientation='h',
+            xanchor='center'
+        ),
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=False)
+    )
+
+    st.plotly_chart(plot_rendimento_modalidade_noperacoes, use_container_width=True)
 desemprego_divida_lp = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
 desemprego_divida_lp["data"] = pd.to_datetime(desemprego_divida_lp["data"], format='%Y-%m')
