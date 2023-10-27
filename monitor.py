@@ -19,6 +19,7 @@ warnings.filterwarnings('ignore')
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
 
 disable_hover_plotly_css = """
+<style>
 @media (hover: none), (pointer: coarse) {
     /* Desativar hover nos elementos Plotly com a classe 'nsewdrag drag' */
     .nsewdrag.drag {
