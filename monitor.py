@@ -22,7 +22,7 @@ disable_hover_plotly_css = """
 @media (hover: none), (pointer: coarse) {
     /* Desativar hover nos elementos Plotly com a classe 'nsewdrag drag' */
     .nsewdrag.drag {
-        pointer-events: none !important;
+        pointer-events: none !mousemove;
     }
 }
 </style>
