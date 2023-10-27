@@ -627,6 +627,7 @@ plot_micro_peq_problematico = px.bar(df_micro_peq_problematico,
              template="seaborn")
 
 plot_micro_peq_problematico.update_layout(
+    barmode='group',
     yaxis_title="Endividamento de curto prazo e ativo problemático, em que há pouca expectativa de pagamento",
     legend_title_text='',
     legend=dict(x=0.5, y=-0.15, xanchor='center', yanchor='top', orientation = 'h'),
