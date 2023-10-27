@@ -24,10 +24,10 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 
 disable_hover_plotly_css = """
 <style>
-@media (hover: none), (pointer: coarse) {
+@media (hover: hover), (pointer: coarse) {
    /* Desativar hover e interação para os elementos Plotly especificados */
    nsewdrag drag {
-       pointer-events: none;
+       pointer-events: none !important;
    }
 }
 </style>
