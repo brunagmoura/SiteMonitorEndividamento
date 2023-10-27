@@ -24,8 +24,10 @@ disable_hover_plotly_css = """
     .nsewdrag.drag:not(.cartesianlayer) {
         pointer-events: none !important;
     }
+}
 
-    /* Manter o evento 'wheel' para a classe '.nsewdrag.drag' nos celulares */
+/* Manter o evento 'mousemove' para a classe '.nsewdrag.drag' nos celulares */
+@media (hover: none), (pointer: coarse) {
     .nsewdrag.drag {
         pointer-events: auto !important;
     }
