@@ -19,13 +19,9 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 
 disable_hover_plotly_css = """
 <style>
-.xy {
-    pointer-events: none !important;
-}
-
 @media (hover: none), (pointer: coarse) {
-    .xy {
-        pointer-events: auto !important;
+    .xy:not(.mousemove) {
+        pointer-events: none !important;
     }
 }
 </style>
