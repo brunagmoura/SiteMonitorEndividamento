@@ -22,16 +22,7 @@ disable_hover_plotly_css = """
 <style>
 @media (hover: none), (pointer: coarse) {
     /* Desativar hover e interação para os elementos Plotly especificados */
-    .nwdrag.drag.cursor-nw-resize,
-    .nedrag.drag.cursor-ne-resize,
-    .swdrag.drag.cursor-sw-resize,
-    .sedrag.drag.cursor-se-resize,
-    .ewdrag.drag.cursor-ew-resize,
-    .wdrag.drag.cursor-w-resize,
-    .edrag.drag.cursor-e-resize,
-    .nsdrag.drag.cursor-ns-resize,
-    .sdrag.drag.cursor-s-resize,
-    .ndrag.drag.cursor-n-resize {
+    draglayer cursor-crosshair {
         pointer-events: none !important;
     }
 }
