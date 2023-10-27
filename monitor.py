@@ -494,7 +494,7 @@ with col5:
 
     df_corr_ibge_scr_pj = pd.read_csv("df_corr_ibge_scr_pj.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-    plot_corr_ibge_scr_pj = px.scatter(df_corr_ibge_scr_pj, x="ativo_problematico", y="Saída de atividade", color="cnae_secao", hover_data=["cnae_secao"])
+    plot_corr_ibge_scr_pj = px.scatter(df_corr_ibge_scr_pj, x="ativo_problematico", y="Saída de atividade/Total", color="cnae_secao", hover_data=["Seção CNAE e ano"])
     
     plot_corr_ibge_scr_pj.update_layout(showlegend=False,
                                        title='',
