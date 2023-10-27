@@ -21,8 +21,17 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 disable_hover_plotly_css = """
 <style>
 @media (hover: none), (pointer: coarse) {
-    /* Desativar hover nos elementos Plotly com a classe 'nsewdrag drag' */
-    .nsewdrag.drag {
+    /* Desativar hover e interação para os elementos Plotly especificados */
+    .nwdrag.drag.cursor-nw-resize,
+    .nedrag.drag.cursor-ne-resize,
+    .swdrag.drag.cursor-sw-resize,
+    .sedrag.drag.cursor-se-resize,
+    .ewdrag.drag.cursor-ew-resize,
+    .wdrag.drag.cursor-w-resize,
+    .edrag.drag.cursor-e-resize,
+    .nsdrag.drag.cursor-ns-resize,
+    .sdrag.drag.cursor-s-resize,
+    .ndrag.drag.cursor-n-resize {
         pointer-events: none !important;
     }
 }
@@ -307,7 +316,7 @@ col30, col31 = st.columns((2))
 
 with col30:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento por faixa de renda em comparação à taxa de desocupação</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com vencimento acima de 360 dias por faixa de renda em comparação à taxa de desocupação</div>", unsafe_allow_html=True)
     
     desemprego_divida_lp = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
     
@@ -394,28 +403,26 @@ with col31:
 
     sns.set_theme(style="white")
     corr = df_corr_porte_pf.corr()
-    mask = np.tril(np.ones_like(corr, dtype=bool))
-    plot_corr_porte_pf, ax = plt.subplots(figsize=(5, 5))
-    sns_heatmap = sns.heatmap(corr, mask=mask, cmap='Spectral',
-                          square=True, linewidths=.5, annot=True, annot_kws={"size": 10},
-                          cbar=False)  
+    mask = np.triu(np.ones_like(corr, dtype=bool))
+    plot_corr_porte_pf, ax = plt.subplots()
+    sns_heatmap = sns.heatmap(corr, mask=mask, cmap='RdBu',
+                          square=True, linewidths=.5, annot=True, annot_kws={"size": 10}, cbar_kws={"shrink": 0.8},
+                          cbar=True)  
 
     ax.xaxis.tick_bottom()
     ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
     ax.xaxis.set_label_position('bottom') 
 
     # Mover os rótulos do eixo Y para a direita
-    ax.yaxis.tick_right()
+    ax.yaxis.tick_left()
     ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
-    ax.yaxis.set_label_position('right')
+    ax.yaxis.set_label_position('left')
 
     # Ajustes adicionais
-    ax.tick_params(axis='both', which='major', labelsize=10, color='#666666')
-
-    # Criar a colorbar manualmente na parte inferior
-    cbar_ax = plot_corr_porte_pf.add_axes([0, 0.15, 0.05, 0.7])  # Ajuste as dimensões conforme necessário
-    cbar = plt.colorbar(sns_heatmap.collections[0], cax=cbar_ax, orientation='vertical')
-    cbar.ax.tick_params(labelsize=9)
+    ax.tick_params(axis='both', which='both', labelsize=7, color='#888888')
+    
+    cbar = ax.collections[0].colorbar
+    cbar.ax.tick_params(labelsize=9, color='#888888')
 
     st.pyplot(plot_corr_porte_pf, use_container_width=True)
 
