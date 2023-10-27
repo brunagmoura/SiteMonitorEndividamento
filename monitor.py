@@ -12,17 +12,17 @@ from dash import Dash, dcc, html, Input, Output
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import datetime as dt, timedelta
 
 warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
 
 disable_hover_plotly_css = """
-<style>
 @media (hover: none), (pointer: coarse) {
     /* Desativar hover nos elementos Plotly com a classe 'nsewdrag drag' */
     .nsewdrag.drag {
-        touch-action: none;
+        pointer-events: none !important;
     }
 }
 </style>
@@ -678,3 +678,141 @@ with col11:
 
 with col12:
     st.write(' ')
+    
+
+#API Câmara dos Deputados
+
+# Definir a URL da API para o endpoint de projetos
+url = "https://dadosabertos.camara.leg.br/api/v2/proposicoes"
+
+# Definir os parâmetros da requisição
+data_inicio = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d")
+data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
+params = {
+    "dataInicio": data_inicio,
+    "dataFim": data_fim,
+    "ordenarPor": "id",
+    "itens": 100,  # Quantidade de itens por página
+    "pagina": 1,   # Começar pela primeira página
+    "siglaTipo": ["PL", "PLP"],
+}
+# Definir as palavras-chave que deseja filtrar na ementa dos projetos
+palavras_chave = ["crédito", "desburocratização do crédito","cooperativas de seguros","cooperativas de crédito","garantias","falência", "recuperação extrajudicial", "insolvência civil", "execução extrajudicial","nômade digital","micro e pequenas empresas",
+"microempreendedor individual",
+"dpvat",
+"resolução bancária",
+"taxas de juros rotativo",
+"debêntures",
+"criptoativos",
+"financiamento imobiliário",
+"mercado de capital",
+"mercado financeiro",
+"sistema financeiro nacional",
+"seguros",
+"previdência privada",
+"fintechs",
+"ccbs digitais",
+"open finance",
+"autorizações de instituições financeiras",
+"regulação do mínimo existencial",
+"lei de infraestrutura financeira",
+"regulação de conduta bancária",
+"educação sobre cheque especial e rotativo",
+"investimentos em infraestrutura",
+"garantias para ppps",
+"devolução de concessões",
+"restrições à comercialização de mips",
+"revisão de precificação",
+"títulos verdes",
+"mercado de carbono",
+"renovabio",
+"gás natural",
+"leilão compulsório",
+"atração de investimentos privados em gasodutos",
+"transporte interestadual",
+"fretamento: circuito fechado",
+"modelo de ferrovias",
+"compras centralizadas",
+"poupança escola",
+"política de preços",
+"petróleo",
+"cide",
+"etanol na letec",
+"dpvat",
+"seguro rural",
+"susep",
+"private enforcement",
+"regulação de aplicativos",
+"mercado digital",
+"plataformas digitais",
+"transportes individuais alternativos",
+"concorrência",
+"distribuição gratuita de prêmios",
+"propaganda e captação antecipada de poupança popular",
+"loterias",
+"sweepstakes",
+"corridas de cavalos",
+"cade",
+"ambiente de negócios"
+]
+
+
+
+
+# Fazer requisições para todas as páginas de resultados
+projetos = []
+while True:
+    # Fazer a requisição para a API
+    response = requests.get(url, params=params)
+    # Verificar se a requisição foi bem-sucedida
+    if response.status_code == 200:
+        # Acessar o conteúdo da resposta em formato JSON
+        dados = response.json()["dados"]
+        # Verificar se há projetos na página atual
+        if len(dados) == 0:
+            break
+        # Filtrar os projetos que contêm pelo menos uma palavra-chave na ementa
+        projetos.extend([projeto for projeto in dados if any(palavra in projeto["ementa"].lower() for palavra in palavras_chave)])
+        # Avançar para a próxima página
+        params["pagina"] += 1
+    else:
+        print("Erro ao fazer requisição para a API:", response.status_code)
+        break
+
+token = "seu_token_de_acesso_aqui"
+
+# Definir o período de tempo desejado (última semana)
+data_atual = dt.now()
+data_inicio = data_atual - timedelta(days=7)
+
+# Percorrer a lista de proposições
+for proposicao in projetos:
+    id_proposicao = proposicao['id']
+    
+    # Fazer uma chamada ao endpoint /proposicoes/{id}/tramitacoes para obter as tramitações da proposição
+    url_tramitacoes = f"https://dadosabertos.camara.leg.br/api/v2/proposicoes/{id_proposicao}/tramitacoes"
+    response_tramitacoes = requests.get(url_tramitacoes, headers={"Authorization": f"Bearer {token}"})
+    
+    if response_tramitacoes.status_code == 200:
+        tramitacoes = response_tramitacoes.json()['dados']
+        
+        # Obter a última tramitação da proposição
+        ultima_tramitacao = tramitacoes[-1]
+        
+        # Extrair a situação de tramitação dessa última tramitação
+        situacao_tramitacao = ultima_tramitacao['descricaoSituacao']
+        
+        # Adicionar a situação de tramitação à proposição
+        proposicao['situacaoTramitacao'] = situacao_tramitacao
+    else:
+        print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
+
+colunas = ['id', 'siglaTipo', 'numero', 'ano', 'ementa', 'situacaoTramitacao']
+
+df = pd.DataFrame(projetos, columns=colunas)
+
+Aguardando_relator = df[df["situacaoTramitacao"] == "Aguardando Designação de Relator"]
+
+Aguardando_relator.style.set_properties(lw={0: 2})
+
+st.table(data=Aguardando_relator)

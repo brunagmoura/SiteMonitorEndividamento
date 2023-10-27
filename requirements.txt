@@ -6,3 +6,4 @@ requests == 2.31.0
 seaborn == 0.12.2
 matplotlib == 3.8.0
 numpy == 1.26.0
+datetime == 5.2
