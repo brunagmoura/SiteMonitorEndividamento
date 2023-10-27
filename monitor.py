@@ -19,6 +19,10 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 
 st.title(" :bar_chart: Monitor do endividamento dos brasileiros")
 
+st.info('Para facilitar a sua análise, todos os valores já estão a valores presentes!\n\n'
+        'Clique em "sobre" no canto superior direito da tela para conferir mais detalhes sobre este projeto', 
+        icon="👩‍💻")
+
 #Caixa para selecionar as datas
 
 st.sidebar.header("Qual período você deseja consultar?")
@@ -182,7 +186,7 @@ with col2:
         xanchor='center',
         x=0.5,   
         orientation='h',  
-        title="ativo problemático deflacionado/população",
+        title="ativo problemático/população",
         titleside = "bottom"
     ),
         margin=dict(t=0, b=0, l=0, r=0)
@@ -428,8 +432,6 @@ with col31:
     ax.tick_params(axis='both', which='major', labelsize=15, color='#666666')
     ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
     ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
-    #cbar = sns_heatmap.collections[0].colorbar
-    #cbar.ax.tick_params(labelsize=12, color='#666666')
 
     st.pyplot(plot_corr_porte_pf)
 
@@ -564,14 +566,14 @@ plot_pj_porte_modalidade_endividamentocp = px.line(pj_porte_modalidade_endividam
              category_orders={"porte": ["Empresa de pequeno porte", "Microempresa"]})
 
 plot_pj_porte_modalidade_endividamentocp.update_layout(
-    yaxis_title="Endividamento de curto prazo deflacionado",
+    yaxis_title="Endividamento de curto prazo",
     legend_title_text='modalidade',
     legend=dict(x=0.5, y=-0.17, xanchor='center', yanchor='top', orientation = 'h')
 )
 
 st.plotly_chart(plot_pj_porte_modalidade_endividamentocp, use_container_width=True)
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Micro e pequenas empresas: endividamento para capital de giro versus ativo problemático</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Micro e pequenas empresas: endividamento para capital de giro versus ativo problemático, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
 
 df_micro_peq_problematico = pd.read_csv("df_micro_peq_problematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
@@ -592,7 +594,7 @@ plot_micro_peq_problematico = px.bar(df_micro_peq_problematico,
              template="seaborn")
 
 plot_micro_peq_problematico.update_layout(
-    yaxis_title="Endividamento de curto prazo e ativo problemático deflacionados",
+    yaxis_title="Endividamento de curto prazo e ativo problemático, em que há pouca expectativa de pagamento",
     legend_title_text='',
     legend=dict(x=0.5, y=-0.15, xanchor='center', yanchor='top', orientation = 'h'),
         xaxis=dict(dtick="M24"),
