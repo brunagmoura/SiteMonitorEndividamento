@@ -67,57 +67,6 @@ date2 = datetime.datetime(end_year, month_abbr.index(end_month), last_day)
 
 st.sidebar.markdown(f'<p style="text-align: center">Exibindo dados para o intervalo {date1.strftime("%Y-%m")} a {date2.strftime("%Y-%m")}.</p>', unsafe_allow_html=True)
 
-st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Evolução do endividamento dos brasileiros ao longo do tempo</div>", unsafe_allow_html=True)
-
-st.markdown("<div style='text-align: center; color: #666666; font-size: 1em;'>As parcelas de crédito se referem à soma das operações de crédito contratadas pelos brasileiros, pessoas físicas e jurídicas, com o prazo de vencimento indicado.</div>", unsafe_allow_html=True)
-
-#Gráfico diferentes dívidas ao longo do tempo
-
-diferentes_dividas["data_base"] = diferentes_dividas["data_base"].dt.to_period('M').dt.to_timestamp()
-diferentes_dividas = diferentes_dividas.sort_values(by="data_base")
-
-diferentes_dividas = diferentes_dividas[(diferentes_dividas["data_base"] >= date1) & (diferentes_dividas["data_base"] <= date2)].copy()
-
-fig = go.Figure()
-
-for col in diferentes_dividas.columns[1:]:
-    if col != 'carteira_ativa':
-        fig.add_trace(go.Scatter(x=diferentes_dividas['data_base'], 
-                                 y=diferentes_dividas[col], 
-                                 mode='lines', 
-                                 name=col,
-                                yaxis='y2'))
-
-# Adicionar barras para 'carteira_ativa'
-fig.add_trace(go.Bar(x=diferentes_dividas['data_base'], 
-                     y=diferentes_dividas['carteira_ativa'],
-                    opacity=0.5,
-                    showlegend=False))
-
-# Atualizar o layout
-fig.update_layout(
-    title='Parcelas a vencer vs Carteira ativa',
-    xaxis_title='Data',
-    yaxis_title='Parcelas das operações de crédito',
-    yaxis2=dict(
-        title='Carteira ativa',
-        overlaying='y',
-        side='right'
-    ),
-    legend=dict(
-        y=-0.2,
-        traceorder='normal',
-        orientation='h',
-        font=dict(
-            size=12,
-            
-        ),
-    ),
-    template='seaborn'
-)
-
-st.plotly_chart(fig, use_container_width=True, height=200)
-
 st.subheader("Como a população brasileira anda se endividando?")
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua ocupação</div>", unsafe_allow_html=True)
@@ -208,7 +157,7 @@ with col2:
 )
 
     
-    st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True, height = 200)
+    st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua renda</div>", unsafe_allow_html=True)
 
@@ -226,7 +175,7 @@ porte = st.selectbox(
 col20, col21 = st.columns((2))
 
 with col20:
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com vencimento acima de 360 dias em relação às modalidades de crédito contratadas</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com vencimento acima de 360 dias em relação às modalidades de crédito contratadas pelas pessoas físicas da faixa de renda selecionada</div>", unsafe_allow_html=True)
     
     pf_rendimento_modalidade_noperacoes_endividamento_filtrado = pf_rendimento_modalidade_noperacoes_endividamento_filtrado[pf_rendimento_modalidade_noperacoes_endividamento_filtrado['porte'] == porte]
 
@@ -258,7 +207,7 @@ with col20:
 
 with col21:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Quantidade de operações totais (para qualquer vencimento) em relação às modalidades de crédito contratadas</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Quantidade de operações totais (para qualquer vencimento) em relação às modalidades de crédito contratadas pelas pessoas físicas da faixa de renda selecionada</div>", unsafe_allow_html=True)
 
     pf_rendimento_modalidade_noperacoes_endividamento_filtrado = pf_rendimento_modalidade_noperacoes_endividamento_filtrado[pf_rendimento_modalidade_noperacoes_endividamento_filtrado['porte'] == porte]
 
@@ -282,7 +231,7 @@ with col21:
         yaxis=dict(showgrid=False),
         margin=dict(t=0, b=0, l=0, r=0)
     )
-
+        
     st.plotly_chart(plot_rendimento_modalidade_noperacoes, use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Inserindo dados macroeconômicos na análise</div>", unsafe_allow_html=True)
@@ -318,23 +267,30 @@ def create_figure(yaxis_column_name):
             overlaying='y',
             side='right',
             showgrid=False,
-            title=""
+            title="Endividamento de longo prazo"
         ),
+        legend_title_text='modalidades',
         template="seaborn",
         legend=dict(
             x=0.5,
             y=-0.2,
             orientation='h',
-            xanchor='center'
+            xanchor='center',
+            traceorder='normal',
+            yanchor='top',
+            font=dict(
+            size=12
+            )
         ),
         xaxis=dict(showgrid=False),
         yaxis=dict(
             showgrid=False,
             title=yaxis_column_name
         ),
-        margin=dict(t=0, l=0, r=0, b=0)
+        margin=dict(t=0, l=0, r=0, b=0),
+        showlegend = True
     )
-
+        
     return plot_juros_inflacao_modalidade
 
 option = st.selectbox(
@@ -410,13 +366,14 @@ with col30:
             title="Endividamento de longo prazo"
         ),
         template="seaborn",
+        legend_title_text='categorias de renda',
         legend=dict(
+            x=0.5,  # Centraliza a legenda no eixo x
             y=-0.2,
             traceorder='normal',
             orientation='h',
-            font=dict(
-                size=12
-            )
+            xanchor='center',  # Ancora o centro da legenda no ponto x
+            yanchor='top'      # Ancora a parte superior da legenda no ponto y
         ),  
         xaxis=dict(showgrid=False),
         yaxis=dict(
@@ -428,7 +385,6 @@ with col30:
     )
 
     st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
-
     
 with col31:
     
@@ -438,14 +394,28 @@ with col31:
 
     sns.set_theme(style="white")
     corr = df_corr_porte_pf.corr()
-    mask = np.triu(np.ones_like(corr, dtype=bool))
-    plot_corr_porte_pf, ax = plt.subplots(figsize=(11, 9))
+    mask = np.tril(np.ones_like(corr, dtype=bool))
+    plot_corr_porte_pf, ax = plt.subplots(figsize=(5, 5))
     sns_heatmap = sns.heatmap(corr, mask=mask, cmap='Spectral',
-                          square=True, linewidths=.5, annot=True, annot_kws={"size": 15},
-                          cbar=True)
-    ax.tick_params(axis='both', which='major', labelsize=15, color='#666666')
+                          square=True, linewidths=.5, annot=True, annot_kws={"size": 10},
+                          cbar=False)  
+
+    ax.xaxis.tick_bottom()
     ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+    ax.xaxis.set_label_position('bottom') 
+
+    # Mover os rótulos do eixo Y para a direita
+    ax.yaxis.tick_right()
     ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
+    ax.yaxis.set_label_position('right')
+
+    # Ajustes adicionais
+    ax.tick_params(axis='both', which='major', labelsize=10, color='#666666')
+
+    # Criar a colorbar manualmente na parte inferior
+    cbar_ax = plot_corr_porte_pf.add_axes([0, 0.15, 0.05, 0.7])  # Ajuste as dimensões conforme necessário
+    cbar = plt.colorbar(sns_heatmap.collections[0], cax=cbar_ax, orientation='vertical')
+    cbar.ax.tick_params(labelsize=9)
 
     st.pyplot(plot_corr_porte_pf, use_container_width=True)
 
@@ -492,16 +462,21 @@ plot_pf_porte_endividamentolp_inflacao.update_layout(
         showgrid=False
     ),
     xaxis=dict(
-        showgrid=False
+        showgrid=False,
+        dtick="M24"
     ),
     legend=dict(
+        x=0.5,
         y=-0.2,
         traceorder='normal',
         orientation='h',
+        xanchor='center',
+        yanchor='top',
         font=dict(size=12)
     ),
     template="seaborn",
     showlegend = True,
+    legend_title_text='modalidade'
 )
 
 st.plotly_chart(plot_pf_porte_endividamentolp_inflacao, use_container_width=True)
@@ -577,7 +552,7 @@ with col6:
 )
 
     
-    st.plotly_chart(plot_cnae_pj_ativoproblematico,use_container_width=True, height = 200)
+    st.plotly_chart(plot_cnae_pj_ativoproblematico,use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Por dentro das micro e pequenas empresas</div>", unsafe_allow_html=True)
     
@@ -602,7 +577,9 @@ plot_pj_porte_modalidade_endividamentocp = px.line(pj_porte_modalidade_endividam
 plot_pj_porte_modalidade_endividamentocp.update_layout(
     yaxis_title="Endividamento de curto prazo",
     legend_title_text='modalidade',
-    legend=dict(x=0.5, y=-0.17, xanchor='center', yanchor='top', orientation = 'h')
+    legend=dict(x=0.5, y=-0.17, xanchor='center', yanchor='top', orientation = 'h'),
+    xaxis=dict(dtick="M24"),
+    xaxis2=dict(dtick="M24")
 )
 
 st.plotly_chart(plot_pj_porte_modalidade_endividamentocp, use_container_width=True)
@@ -630,7 +607,7 @@ plot_micro_peq_problematico = px.bar(df_micro_peq_problematico,
 plot_micro_peq_problematico.update_layout(
     barmode='group',
     yaxis_title="Endividamento de curto prazo e ativo problemático, em que há pouca expectativa de pagamento",
-    legend_title_text='',
+    legend_title_text='tipo de endividamento',
     legend=dict(x=0.5, y=-0.15, xanchor='center', yanchor='top', orientation = 'h'),
         xaxis=dict(dtick="M24"),
         xaxis2=dict(dtick="M24")
@@ -663,23 +640,13 @@ plot_pj_cnaesecao_cnaesubclasse_endividamento.update_traces(textinfo='label+perc
                  textfont_size = 12,
                  textfont_color = 'white')
 
-st.plotly_chart(plot_pj_cnaesecao_cnaesubclasse_endividamento,use_container_width=True, height = 200)
+st.plotly_chart(plot_pj_cnaesecao_cnaesubclasse_endividamento,use_container_width=True)
 
 st.subheader("Como esse assunto vem sendo tratado pelos legisladores?")
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Palavras em destaque nos projetos leis da Câmara dos Deputados - 2013 a 2023</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Proposições legislativas com tramitação nos últimos 360 anos que se referem à endividamento</div>", unsafe_allow_html=True)
 
-col10, col11, col12 = st.columns([1, 3, 1])
-
-with col10:
-    st.write(' ')
-
-with col11:
-    st.image("nuvem_palavras_projetos_leis_2012_2023.svg", caption='', use_column_width=True)
-
-with col12:
-    st.write(' ')
-    
+st.markdown("<div style='text-align: center; color: #666666; font-size: 1em;'>A busca utiliza a API da Câmara dos Deputados, módulo proposições, e se refere aos projetos de lei e medidas provisórias que tenham como palavras-chave termos relacionados ao endividamento da população brasileira.</div>", unsafe_allow_html=True)
 
 #API Câmara dos Deputados
 
@@ -687,78 +654,38 @@ with col12:
 url = "https://dadosabertos.camara.leg.br/api/v2/proposicoes"
 
 # Definir os parâmetros da requisição
-data_inicio = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%Y-%m-%d")
+data_inicio = (datetime.datetime.now() - datetime.timedelta(days=360)).strftime("%Y-%m-%d")
 data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
+palavras_chave = [ 
+"superendividamento",
+"inadimplimento das obrigações", 
+"mínimo existencial",   
+"repactuação de dívidas",
+"taxa de juros"
+"crédito ao consumidor",
+"parcelamento de dívidas",
+"renegociação de dívidas"
+"rotativo"
+"cartão de crédito",
+"crédito rural",
+"crédito habitacional",
+"empréstimo consignado"
+"capital de giro",
+"crédito para investimento",
+"sistemas de informação de crédito",
+"ativo problemático",
+"crédito a vencer"
+]
 params = {
     "dataInicio": data_inicio,
     "dataFim": data_fim,
     "ordenarPor": "id",
     "itens": 100,  # Quantidade de itens por página
     "pagina": 1,   # Começar pela primeira página
-    "siglaTipo": ["PL", "PLP"],
+    "siglaTipo": ["PL", "PLP", "MPV"],
+    "keywords": palavras_chave
 }
 # Definir as palavras-chave que deseja filtrar na ementa dos projetos
-palavras_chave = ["crédito", "desburocratização do crédito","cooperativas de seguros","cooperativas de crédito","garantias","falência", "recuperação extrajudicial", "insolvência civil", "execução extrajudicial","nômade digital","micro e pequenas empresas",
-"microempreendedor individual",
-"dpvat",
-"resolução bancária",
-"taxas de juros rotativo",
-"debêntures",
-"criptoativos",
-"financiamento imobiliário",
-"mercado de capital",
-"mercado financeiro",
-"sistema financeiro nacional",
-"seguros",
-"previdência privada",
-"fintechs",
-"ccbs digitais",
-"open finance",
-"autorizações de instituições financeiras",
-"regulação do mínimo existencial",
-"lei de infraestrutura financeira",
-"regulação de conduta bancária",
-"educação sobre cheque especial e rotativo",
-"investimentos em infraestrutura",
-"garantias para ppps",
-"devolução de concessões",
-"restrições à comercialização de mips",
-"revisão de precificação",
-"títulos verdes",
-"mercado de carbono",
-"renovabio",
-"gás natural",
-"leilão compulsório",
-"atração de investimentos privados em gasodutos",
-"transporte interestadual",
-"fretamento: circuito fechado",
-"modelo de ferrovias",
-"compras centralizadas",
-"poupança escola",
-"política de preços",
-"petróleo",
-"cide",
-"etanol na letec",
-"dpvat",
-"seguro rural",
-"susep",
-"private enforcement",
-"regulação de aplicativos",
-"mercado digital",
-"plataformas digitais",
-"transportes individuais alternativos",
-"concorrência",
-"distribuição gratuita de prêmios",
-"propaganda e captação antecipada de poupança popular",
-"loterias",
-"sweepstakes",
-"corridas de cavalos",
-"cade",
-"ambiente de negócios"
-]
-
-
-
 
 # Fazer requisições para todas as páginas de resultados
 projetos = []
@@ -808,12 +735,84 @@ for proposicao in projetos:
     else:
         print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
 
-colunas = ['id', 'siglaTipo', 'numero', 'ano', 'ementa', 'situacaoTramitacao']
+colunas = ['siglaTipo', 'numero', 'ano', 'ementa', 'situacaoTramitacao']
 
 df = pd.DataFrame(projetos, columns=colunas)
+df['situacaoTramitacao'] = df['situacaoTramitacao'].astype('str')
+df['situacaoTramitacao']=df['situacaoTramitacao'].replace(to_replace='None', value='Não informado')
+df.columns = ["Tipo", "Número", "Ano", "Ementa", "Situação"] 
+tabela_html = df.to_html(index=False, classes='table table-bordered')
 
-Aguardando_relator = df[df["situacaoTramitacao"] == "Aguardando Designação de Relator"]
+# Adicionando estilos CSS para combinar com o estilo Seaborn
 
-Aguardando_relator.style.set_properties(lw={0: 2})
+css_style = """
+<style>
+/* Estilo para o contêiner com barra de rolagem */
+.scrollable-table {
+  height: 700px !important;
+  width: 100%;
+  overflow-y: scroll;
+  background-color: #fff; /* Cor de fundo do contêiner */
+}
 
-st.table(data=Aguardando_relator)
+/* Estilizando a barra de rolagem */
+.scrollable-table::-webkit-scrollbar {
+  width: 12px; /* Largura da barra de rolagem */
+  background-color: #f0f0f0; /* Cor de fundo da barra de rolagem */
+}
+
+.scrollable-table::-webkit-scrollbar-thumb {
+  background-color: #888; /* Cor da barra de rolagem */
+}
+
+/* Estilo para o cabeçalho da tabela */
+.table thead {
+  background-color: #363636; /* Cor de fundo do cabeçalho */
+  color: #fff; /* Cor do texto do cabeçalho */
+}
+
+/* Estilizando as colunas centralizadas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center; /* Centraliza o texto nas colunas */
+}
+
+/* Estilo para linhas ímpares (cinza claro) após o cabeçalho */
+.table tbody tr:nth-child(odd) {
+  background-color: #DCDCDC; /* Cor de fundo cinza claro */
+}
+
+/* Estilo para linhas pares (cinza médio) após o cabeçalho */
+.table tbody tr:nth-child(even) {
+  background-color: #F8F8FF; /* Cor de fundo cinza médio */
+}
+
+/* Resto do seu estilo CSS aqui */
+</style>
+
+"""
+
+# Incorporando o HTML do DataFrame na estrutura do contêiner com rolagem
+html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+{css_style}
+</head>
+<body>
+<div class="scrollable-table">
+  <table class="table table-bordered">
+    {tabela_html}
+  </table>
+</div>
+</body>
+</html>
+"""
+
+st.markdown(html, unsafe_allow_html=True)
