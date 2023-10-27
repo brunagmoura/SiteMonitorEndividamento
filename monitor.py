@@ -23,6 +23,11 @@ disable_hover_css = """
     * {
         pointer-events: none !important;
     }
+    /* Permitindo rolagem na página */
+    html, body {
+        pointer-events: auto !important;
+    }
+    /* Adicione outras exceções aqui se necessário */
 }
 </style>
 """
