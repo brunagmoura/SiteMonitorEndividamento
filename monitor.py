@@ -428,8 +428,8 @@ with col31:
     ax.tick_params(axis='both', which='major', labelsize=15, color='#666666')
     ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
     ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
-    cbar = sns_heatmap.collections[0].colorbar
-    cbar.ax.tick_params(labelsize=12, color='#666666')
+    #cbar = sns_heatmap.collections[0].colorbar
+    #cbar.ax.tick_params(labelsize=12, color='#666666')
 
     st.pyplot(plot_corr_porte_pf)
 
