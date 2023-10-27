@@ -18,28 +18,47 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
 
-disable_hover_plotly_css = """
-<style>
-@media (hover: none), (pointer: coarse) {
-    /* Desativar hover e interação para os elementos Plotly especificados */
-    .nwdrag.drag.cursor-nw-resize,
-    .nedrag.drag.cursor-ne-resize,
-    .swdrag.drag.cursor-sw-resize,
-    .sedrag.drag.cursor-se-resize,
-    .ewdrag.drag.cursor-ew-resize,
-    .wdrag.drag.cursor-w-resize,
-    .edrag.drag.cursor-e-resize,
-    .nsdrag.drag.cursor-ns-resize,
-    .sdrag.drag.cursor-s-resize,
-    .ndrag.drag.cursor-n-resize {
-        pointer-events: none;
-    }
-}
-</style>
-"""
+
+#disable_hover_plotly_css = """
+#<style>
+#@media (hover: none), (pointer: coarse) {
+#    /* Desativar hover e interação para os elementos Plotly especificados */
+#    nsewdrag drag {
+#        pointer-events: none;
+#    }
+#}
+#</style>
+#"""
 
 # Adicionando o CSS na aplicação
-st.markdown(disable_hover_plotly_css, unsafe_allow_html=True)
+#st.markdown(disable_hover_plotly_css, unsafe_allow_html=True)
+
+# Script JavaScript para detectar movimento do mouse
+js_script = """
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.addEventListener('mousemove', function(e) {
+        let element = document.getElementById('mouse-area');
+        let bounds = element.getBoundingClientRect();
+
+        if (e.pageX > bounds.left && e.pageX < bounds.right && e.pageY > bounds.top && e.pageY < bounds.bottom) {
+            element.innerHTML = 'Movimento do mouse detectado!';
+        }
+    });
+});
+</script>
+"""
+
+# Elemento HTML que reage ao movimento do mouse
+html_container = """
+<div id="mouse-area" style="border:1px solid black; height: 100px;">
+    Mova o mouse aqui
+</div>
+"""
+
+# Mostrar o container HTML e o script JavaScript
+html(html_container)
+st.markdown(js_script, unsafe_allow_html=True) 
 
 st.title(" :bar_chart: Monitor do endividamento dos brasileiros")
 
