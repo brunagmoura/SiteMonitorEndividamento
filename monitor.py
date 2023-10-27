@@ -17,22 +17,19 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
 
-disable_hover_css = """
+disable_hover_plotly_css = """
 <style>
 @media (hover: none), (pointer: coarse) {
-    * {
+    /* Desativar hover nos elementos Plotly com a classe 'nsewdrag drag' */
+    .nsewdrag.drag {
         pointer-events: none !important;
     }
-    /* Permitindo rolagem na página */
-    html, body {
-        pointer-events: auto !important;
-    }
-    /* Adicione outras exceções aqui se necessário */
 }
 </style>
 """
 
-st.markdown(disable_hover_css, unsafe_allow_html=True)
+# Adicionando o CSS na aplicação
+st.markdown(disable_hover_plotly_css, unsafe_allow_html=True)
 
 st.title(" :bar_chart: Monitor do endividamento dos brasileiros")
 
