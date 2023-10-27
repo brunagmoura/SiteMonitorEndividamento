@@ -17,6 +17,18 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
 
+disable_hover_css = """
+<style>
+@media (hover: none) {
+    .cursor-pointer {
+        pointer-events: none !important;
+    }
+}
+</style>
+"""
+
+st.markdown(disable_hover_css, unsafe_allow_html=True)
+
 st.title(" :bar_chart: Monitor do endividamento dos brasileiros")
 
 st.info('Para facilitar a sua análise, todos os valores já estão a valores presentes!\n\n'
