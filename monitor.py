@@ -138,7 +138,7 @@ with col2:
                                zoom=1.9, 
                                center={"lat": -17.14, "lon": -57.33},
                                opacity=1,
-                               labels={'ativo_problematico/pop':'Ativo problemático',
+                               labels={'ativo_problematico/pop':'Ativo problemático/População',
                                        'uf': 'Unidade da Federação do Brasil'},
                                featureidkey="properties.NM_ESTADO")
     
@@ -159,7 +159,7 @@ with col2:
     
     st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True)
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua renda</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua renda</div>", unsafe_allow_html=True)
 
 pf_rendimento_modalidade_noperacoes_endividamento = pd.read_csv("pf_rendimento_modalidade_noperacoes_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
