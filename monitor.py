@@ -19,16 +19,12 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 
 disable_hover_plotly_css = """
 <style>
-@media (hover: none), (pointer: coarse) {
-    /* Desativar hover nos elementos Plotly com a classe 'nsewdrag drag', exceto dentro do 'cartesianlayer' */
-    .nsewdrag.drag:not(.cartesianlayer) {
-        pointer-events: none !important;
-    }
+.xy {
+    pointer-events: none !important;
 }
 
-/* Manter o evento 'mousemove' para a classe '.nsewdrag.drag' nos celulares */
 @media (hover: none), (pointer: coarse) {
-    .nsewdrag.drag {
+    .xy {
         pointer-events: auto !important;
     }
 }
