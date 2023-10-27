@@ -19,8 +19,8 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 
 disable_hover_css = """
 <style>
-@media (hover: none) {
-    .cursor-pointer {
+@media (hover: none), (pointer: coarse) {
+    * {
         pointer-events: none !important;
     }
 }
