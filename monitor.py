@@ -486,15 +486,22 @@ st.subheader('Como as empresas andam se financiando?')
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Distribuição dos ativos problemáticos das empresas brasileiras, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
 
+df_corr_ibge_scr_pj = pd.read_csv("df_corr_ibge_scr_pj.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+cnae_secao = st.selectbox(
+        'Para qual setor de atuação você deseja visualizar?',
+        df_corr_ibge_scr_pj['cnae_secao'].unique()
+    )
+    
 col5, col6 = st.columns((2))
 
 with col5:
 
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Dispersão entre ativos problemáticos e saída das empresas que pertencem a diferentes setores</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Dispersão entre os ativos problemáticos e a saída das empresas que pertencem ao setor de atuação selecionado</div>", unsafe_allow_html=True)
+    
+    df_corr_ibge_scr_pj_filtered = df_corr_ibge_scr_pj[df_corr_ibge_scr_pj['cnae_secao'] == cnae_secao]
 
-    df_corr_ibge_scr_pj = pd.read_csv("df_corr_ibge_scr_pj.csv", encoding="UTF-8", delimiter=',', decimal='.')
-
-    plot_corr_ibge_scr_pj = px.scatter(df_corr_ibge_scr_pj, x="ativo_problematico", y="Saída de atividade/Total", color="cnae_secao", hover_data=["Seção CNAE e ano"])
+    plot_corr_ibge_scr_pj = px.scatter(df_corr_ibge_scr_pj_filtered, x="ativo_problematico", y="Saída de atividade/Total", color="cnae_secao", hover_data=["Seção CNAE e ano"])
     
     plot_corr_ibge_scr_pj.update_layout(showlegend=False,
                                        title='',
@@ -510,17 +517,11 @@ with col5:
 
 with col6:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Estados federativos em que estão localizadas as empresas tomadoras de crédito com parcelas classificadas como ativo problemático</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Estados federativos em que estão localizadas as empresas tomadoras de crédito com parcelas classificadas como ativo problemático que pertencem ao setor de atuação selecionado</div>", unsafe_allow_html=True)
 
     df_cnae_pj_ativoproblematico = pd.read_csv("df_cnae_pj_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-    cnae_secao = st.selectbox(
-        'Para qual setor de atuação você deseja visualizar?',
-        df_cnae_pj_ativoproblematico['cnae_secao'].unique()
-    )
-
     df_cnae_pj_ativoproblematico_filtered = df_cnae_pj_ativoproblematico[df_cnae_pj_ativoproblematico['cnae_secao'] == cnae_secao]
-
 
     plot_cnae_pj_ativoproblematico = px.choropleth_mapbox(df_cnae_pj_ativoproblematico_filtered, 
                                geojson=geojson_data, 
