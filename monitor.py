@@ -37,9 +37,9 @@ st.markdown(disable_hover_plotly_css, unsafe_allow_html=True)
 
 #Início da página
 
-st.title(" :bar_chart: Monitor do endividamento dos brasileiros")
+st.title(":bar_chart: Monitor do endividamento dos brasileiros")
 
-st.info('Para facilitar a sua análise, todos os valores já estão a valores presentes!\n\n'
+st.info('Para facilitar a sua análise, todos os valores já estão deflacionados!\n\n'
         'Clique em "sobre" no canto superior direito da tela para conferir mais detalhes sobre este projeto', 
         icon="👩‍💻")
 
@@ -74,7 +74,18 @@ st.sidebar.markdown(f'<p style="text-align: center">Exibindo dados para o interv
 
 st.subheader("Como a população brasileira anda se endividando?")
 
-st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua ocupação</div>", unsafe_allow_html=True)
+st.markdown("""
+<div style='text-align: center; color: #555555; font-size: 1.3em; margin-bottom: 20px;'>
+    Endividamento dos brasileiros pessoas físicas de acordo com a sua ocupação
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div style='text-align: left; color: #666666; font-size: 1em; background-color: #f0f0f0; padding: 10px; border-radius: 5px;margin-bottom: 20px;'>
+    💡&nbsp;&nbsp;&nbsp;Os dados plotados consideram as parcelas de crédito que as pessoas físicas...
+    No caso do mapa, é considerada a localização do CPF do tomador de crédito.... texto texto texto texto texto texto texto texto texto
+</div>
+""", unsafe_allow_html=True)
 
 @st.cache_data()
 def load_data():
@@ -101,7 +112,9 @@ pf_ocupacao_modalidade_endividamento_filtrado = filter_data(pf_ocupacao_modalida
 col1, col2 = st.columns((2))
 
 with col1:
-
+    
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento dos tomadores de crédito selecionados de acordo com a modalidade da operação e considerando todos os prazos de vencimento</div>", unsafe_allow_html=True)
+    
     # Criação do gráfico
     plot_pf_ocupacao_modalidade_endividamento = px.line(pf_ocupacao_modalidade_endividamento_filtrado, 
                                                         x='data_base',
@@ -177,7 +190,13 @@ with col2:
 
     st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True)
 
-st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua renda</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua renda</div>", unsafe_allow_html=True)
+
+st.markdown("""
+<div style='text-align: left; color: #666666; font-size: 1em; background-color: #f0f0f0; padding: 10px; border-radius: 5px;margin-bottom: 20px;'>
+    💡&nbsp;&nbsp;&nbsp;Os dados plotados consideram as parcelas de crédito que as pessoas físicas.... No caso da quantidade de operações, foram excluídas as operações que totalizam 15 itens........ texto texto texto .... texto texto texto texto texto texto texto texto texto  texto texto texto  texto texto texto  texto texto texto
+</div>
+""", unsafe_allow_html=True)
 
 @st.cache_data()
 def load_pf_rendimento_modalidade_noperacoes_endividamento():
@@ -257,7 +276,13 @@ with col21:
         
     st.plotly_chart(plot_rendimento_modalidade_noperacoes, use_container_width=True)
 
-st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Inserindo dados macroeconômicos na análise</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;margin-bottom: 20px;'>Inserindo dados macroeconômicos na análise</div>", unsafe_allow_html=True)
+
+st.markdown("""
+<div style='text-align: left; color: #666666; font-size: 1em; background-color: #f0f0f0; padding: 10px; border-radius: 5px;margin-bottom: 20px;margin-bottom: 20px;'>
+    💡&nbsp;&nbsp;&nbsp;Ficou curioso em saber mais? O IPEA disponibiliza análises. O bacen disponibiliza análises tantatantan........ texto texto texto........ texto texto texto .... texto texto texto texto texto texto texto texto texto  texto texto texto  texto texto texto  texto texto texto
+</div>
+""", unsafe_allow_html=True)
 
 @st.cache_data()
 def load_df_juros_inflacao_modalidade():
@@ -460,7 +485,6 @@ with col31:
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com prazo de vencimento acima de 360 dias em comparação ao índice de preços ao consumidor amplo (inflação)</div>", unsafe_allow_html=True)
 
-
 @st.cache_data()
 def load_pf_porte_endividamentolp_inflacao():
     df = pd.read_csv("pf_porte_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
@@ -528,7 +552,13 @@ st.plotly_chart(plot_pf_porte_endividamentolp_inflacao, use_container_width=True
 #Mapa endividamento PF e PJ
 st.subheader('Como as empresas andam se financiando?')
 
-st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Distribuição dos ativos problemáticos das empresas brasileiras, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;'>Distribuição dos ativos problemáticos das empresas brasileiras, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
+
+st.markdown("""
+<div style='text-align: left; color: #666666; font-size: 1em; background-color: #f0f0f0; padding: 10px; border-radius: 5px;margin-bottom: 20px;'>
+    💡&nbsp;&nbsp;&nbsp;Os setores de atuação se referem às CNAEs, que são texto texto texto texto........ texto texto texto........ texto texto texto .... texto texto texto texto texto texto texto texto texto  texto texto texto  texto texto texto  texto texto texto
+</div>
+""", unsafe_allow_html=True)
 
 @st.cache_data()
 def load_df_corr_ibge_scr_pj():
@@ -609,8 +639,14 @@ with col6:
     
     st.plotly_chart(plot_cnae_pj_ativoproblematico,use_container_width=True)
 
-st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Por dentro das micro e pequenas empresas</div>", unsafe_allow_html=True)
-    
+st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;'>Por dentro das micro e pequenas empresas</div>", unsafe_allow_html=True)
+
+st.markdown("""
+<div style='text-align: left; color: #666666; font-size: 1em; background-color: #f0f0f0; padding: 10px; border-radius: 5px;margin-bottom: 20px;'>
+    💡&nbsp;&nbsp;&nbsp;Micro empresa é considerada aquela empresa em que..... pequena empresa é aquela empresa é que....., que são texto texto texto texto........ texto texto texto........ texto texto texto .... texto texto texto texto texto texto texto texto texto  texto texto texto  texto texto texto  texto texto texto
+</div>
+""", unsafe_allow_html=True)
+
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Modalidades de crédito contratadas pelas micro e pequenas empresas com parcelas cujo vencimento é inferior a 360 dias</div>", unsafe_allow_html=True)
 
 @st.cache_data()
@@ -675,7 +711,13 @@ plot_micro_peq_problematico.update_layout(
 
 st.plotly_chart(plot_micro_peq_problematico, use_container_width=True)
 
-st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Por dentro do setor de agricultura, pecuária, produção florestal, pesca e aquicultura</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;'>Por dentro do setor de agricultura, pecuária, produção florestal, pesca e aquicultura</div>", unsafe_allow_html=True)
+
+st.markdown("""
+<div style='text-align: left; color: #666666; font-size: 1em; background-color: #f0f0f0; padding: 10px; border-radius: 5px;margin-bottom: 20px;'>
+    💡&nbsp;&nbsp;&nbsp;O setor agro é responsável por x% das exportações brasileiras. Tantantantan texto texto texto
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Distribuição do endividamento nas principais áreas de atuação das empresas do setor de agricultura, pecuária, produção florestal, pesca e aquicultura em dezembro-2022</div>", unsafe_allow_html=True)
 
@@ -707,11 +749,15 @@ plot_pj_cnaesecao_cnaesubclasse_endividamento.update_traces(textinfo='label+perc
 
 st.plotly_chart(plot_pj_cnaesecao_cnaesubclasse_endividamento,use_container_width=True)
 
-st.subheader("Como esse assunto vem sendo tratado pelos legisladores?")
+st.subheader("Como o endividamento dos brasileiros vem sendo tratado pelos legisladores?")
 
-st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Proposições legislativas com tramitação nos últimos 360 anos que se referem à endividamento</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;'>Proposições legislativas que se referem à endividamento com tramitação nos últimos 180 dias</div>", unsafe_allow_html=True)
 
-st.markdown("<div style='text-align: center; color: #666666; font-size: 1em;'>A busca utiliza a API da Câmara dos Deputados, módulo proposições, e se refere aos projetos de lei e medidas provisórias que tenham como palavras-chave termos relacionados ao endividamento da população brasileira.</div>", unsafe_allow_html=True)
+st.markdown("""
+<div style='text-align: left; color: #666666; font-size: 1em; background-color: #f0f0f0; padding: 10px; border-radius: 5px;margin-bottom: 20px;'>
+    💡&nbsp;&nbsp;&nbsp;A busca utiliza a API da Câmara dos Deputados, módulo proposições, e se refere aos projetos de lei e medidas provisórias que tenham como palavras-chave termos relacionados ao endividamento da população brasileira.e....., que são texto texto texto texto........ texto texto texto........ texto texto texto .... texto texto texto texto texto texto texto texto texto  texto texto texto  texto texto texto  texto texto texto
+</div>
+""", unsafe_allow_html=True)
 
 #API Camara dos deputados
 
@@ -767,7 +813,7 @@ def create_dataframe(projetos, token):
     
     df['ano'] = df['ano'].astype('int')
     df['numero'] = df['numero'].astype('int')
-    df['numero'] = df['numero'].apply(lambda x: f"{x:,}".replace(',', '.'))
+
     df.columns = ["Tipo", "Número", "Ano", "Ementa", "Situação"]
     return df
 
@@ -857,6 +903,7 @@ filtered_df = filter_dataframe(df)
 def formatar_numero(valor):
     return f"{valor}"
 
-dados_formatados = filtered_df.style.format({'Número': formatar_numero})
+dados_formatados = filtered_df.style.format({'Número': formatar_numero,
+                                            'Ano': formatar_numero})
 
 st.dataframe(dados_formatados, use_container_width=True, hide_index=True, height=500)
