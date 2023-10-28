@@ -1,5 +1,5 @@
 [theme]
-font = "serif"
+font = "monospace"
 
 [client]
 toolbarMode = "minimal"
