@@ -742,6 +742,7 @@ def fetch_projetos(data_inicio, data_fim, palavras_chave):
             break
     return projetos
 
+@st.cache_data(ttl=3600)
 def fetch_tramitacoes(id_proposicao, token):
     url_tramitacoes = f"https://dadosabertos.camara.leg.br/api/v2/proposicoes/{id_proposicao}/tramitacoes"
     response_tramitacoes = requests.get(url_tramitacoes, headers={"Authorization": f"Bearer {token}"})
@@ -764,6 +765,9 @@ def create_dataframe(projetos, token):
     df = pd.DataFrame(projetos, columns=colunas)
     df['situacaoTramitacao'] = df['situacaoTramitacao'].astype('str')
     df['situacaoTramitacao'] = df['situacaoTramitacao'].replace(to_replace='None', value='Não informado')
+    df['ano'] = df['ano'].astype('int')
+    df['numero'] = df['numero'].astype('int')
+    df['numero'] = df['numero'].apply(lambda x: f"{x:,}".replace(',', '.'))
     df.columns = ["Tipo", "Número", "Ano", "Ementa", "Situação"]
     return df
 
@@ -795,44 +799,22 @@ projetos = fetch_projetos(data_inicio, data_fim, palavras_chave)
 
 df = create_dataframe(projetos, token)
 
-def background_color(x):
-    if x.name == 'index':
-        return [''] * len(x)  # Não aplica estilo ao índice
-    else:
-        return ['background-color: transparent'] * len(x)
-
-def text_color(x):
-    return ['color: #444444'] * len(x)
-
-def border_color(x):
-    return ['border-color: lightgray'] * len(x)
-
-def header_style():
-    return {
-        'selector': 'thead',
-        'props': [('background-color', '#29338e'), ('color', '#29338e')]
-    }
-
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    # Inicializa os estados dos filtros se eles ainda não existirem
-    if 'filter_tipo' not in st.session_state:
+    # Inicializar os estados dos filtros apenas uma vez
+    if 'filter_initialized' not in st.session_state:
         st.session_state.filter_tipo = df['Tipo'].unique().tolist()
-    if 'filter_ano' not in st.session_state:
         st.session_state.filter_ano = (int(df['Ano'].min()), int(df['Ano'].max()))
-    if 'filter_situacao' not in st.session_state:
         st.session_state.filter_situacao = df['Situação'].unique().tolist()
+        st.session_state.filter_initialized = True
 
-    modify = st.checkbox("Add filters")
+    modify = st.checkbox("Filtrar o resultado")
 
     if not modify:
         return df
 
-    df = df.copy()
-    modification_container = st.container()
-
-    with modification_container:
+    with st.container():
         # Filtro para o Tipo
-        st.session_state.filter_tipo = st.multiselect(
+        selected_tipo = st.multiselect(
             "Filter Tipo",
             df['Tipo'].unique(),
             default=st.session_state.filter_tipo
@@ -840,7 +822,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
         # Filtro para o Ano
         _min, _max = int(df['Ano'].min()), int(df['Ano'].max())
-        st.session_state.filter_ano = st.slider(
+        selected_ano = st.slider(
             "Filter Ano",
             min_value=_min,
             max_value=_max,
@@ -849,22 +831,28 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         )
 
         # Filtro para a Situação
-        st.session_state.filter_situacao = st.multiselect(
+        selected_situacao = st.multiselect(
             "Filter Situação",
             df['Situação'].unique(),
             default=st.session_state.filter_situacao
         )
 
     # Aplicar filtros
-    df = df[df['Tipo'].isin(st.session_state.filter_tipo)]
-    df = df[df['Ano'].between(*st.session_state.filter_ano)]
-    df = df[df['Situação'].isin(st.session_state.filter_situacao)]
+    if selected_tipo != st.session_state.filter_tipo:
+        df = df[df['Tipo'].isin(selected_tipo)]
+        st.session_state.filter_tipo = selected_tipo
+
+    if selected_ano != st.session_state.filter_ano:
+        df = df[df['Ano'].between(*selected_ano)]
+        st.session_state.filter_ano = selected_ano
+
+    if selected_situacao != st.session_state.filter_situacao:
+        df = df[df['Situação'].isin(selected_situacao)]
+        st.session_state.filter_situacao = selected_situacao
 
     return df
 
 
 filtered_df = filter_dataframe(df)
 
-styled_filtered_df = filtered_df.style.apply(background_color).apply(text_color).apply(border_color).set_table_styles([header_style()])
-
-st.dataframe(styled_filtered_df, use_container_width=True, hide_index=True, height=200)
+st.dataframe(filtered_df, use_container_width=True, hide_index=True, height=500)
