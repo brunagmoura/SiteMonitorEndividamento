@@ -474,7 +474,9 @@ with col31:
     z=corr_masked,
     x=corr.columns,
     y=corr.index,
-    zmin=-1, zmax=1))
+    zmin=-1, 
+    zmax=1, 
+    showscale=False))
 
     for i, row in enumerate(corr_masked.to_numpy()):
         for j, value in enumerate(row):
