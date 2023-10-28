@@ -13,7 +13,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime as dt, timedelta
-from st_aggrid import AgGrid, GridOptionsBuilder
+import st_aggrid
 
 warnings.filterwarnings('ignore')
 
