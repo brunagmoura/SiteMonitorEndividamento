@@ -13,7 +13,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime as dt, timedelta
-import st_aggrid
 
 warnings.filterwarnings('ignore')
 
@@ -711,9 +710,9 @@ st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>
 
 st.markdown("<div style='text-align: center; color: #666666; font-size: 1em;'>A busca utiliza a API da Câmara dos Deputados, módulo proposições, e se refere aos projetos de lei e medidas provisórias que tenham como palavras-chave termos relacionados ao endividamento da população brasileira.</div>", unsafe_allow_html=True)
 
-#API Câmara dos Deputados
-# Função para buscar projetos da API da Câmara dos Deputados
-@st.cache_data(ttl=3600)  # Cache expira a cada hora (3600 segundos)
+#API Camara dos deputados
+
+@st.cache_data(ttl=3600)
 def fetch_projetos(data_inicio, data_fim, palavras_chave):
     url = "https://dadosabertos.camara.leg.br/api/v2/proposicoes"
     params = {
@@ -733,29 +732,39 @@ def fetch_projetos(data_inicio, data_fim, palavras_chave):
             dados = response.json()["dados"]
             if len(dados) == 0:
                 break
-            projetos.extend([projeto for projeto in dados if any(palavra in projeto["ementa"].lower() for palavra in palavras_chave)])
+            projetos.extend(dados)
             params["pagina"] += 1
         else:
             print("Erro ao fazer requisição para a API:", response.status_code)
             break
     return projetos
 
-# Função para buscar tramitações das proposições
-def fetch_tramitacoes(projetos, token):
+def fetch_tramitacoes(id_proposicao, token):
+    url_tramitacoes = f"https://dadosabertos.camara.leg.br/api/v2/proposicoes/{id_proposicao}/tramitacoes"
+    response_tramitacoes = requests.get(url_tramitacoes, headers={"Authorization": f"Bearer {token}"})
+    if response_tramitacoes.status_code == 200:
+        tramitacoes = response_tramitacoes.json()['dados']
+        ultima_tramitacao = tramitacoes[-1] if tramitacoes else None
+        return ultima_tramitacao['descricaoSituacao'] if ultima_tramitacao else "Sem tramitações"
+    else:
+        print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
+        return "Erro na tramitação"
+    
+    
+def create_dataframe(projetos, token):
     for proposicao in projetos:
         id_proposicao = proposicao['id']
-        url_tramitacoes = f"https://dadosabertos.camara.leg.br/api/v2/proposicoes/{id_proposicao}/tramitacoes"
-        response_tramitacoes = requests.get(url_tramitacoes, headers={"Authorization": f"Bearer {token}"})
+        situacao_tramitacao = fetch_tramitacoes(id_proposicao, token)
+        proposicao['situacaoTramitacao'] = situacao_tramitacao
 
-        if response_tramitacoes.status_code == 200:
-            tramitacoes = response_tramitacoes.json()['dados']
-            ultima_tramitacao = tramitacoes[-1] if tramitacoes else None
-            situacao_tramitacao = ultima_tramitacao['descricaoSituacao'] if ultima_tramitacao else "Sem tramitações"
-            proposicao['situacaoTramitacao'] = situacao_tramitacao
-        else:
-            print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
+    colunas = ['siglaTipo', 'numero', 'ano', 'ementa', 'situacaoTramitacao']
+    df = pd.DataFrame(projetos, columns=colunas)
+    df['situacaoTramitacao'] = df['situacaoTramitacao'].astype('str')
+    df['situacaoTramitacao'] = df['situacaoTramitacao'].replace(to_replace='None', value='Não informado')
+    df.columns = ["Tipo", "Número", "Ano", "Ementa", "Situação"]
+    return df
 
-# Configuração dos parâmetros para a chamada da função
+token = "seu_token_de_acesso_aqui"
 data_inicio = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
 data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
 palavras_chave = [ 
@@ -779,64 +788,80 @@ palavras_chave = [
 "crédito a vencer"
 ]
 
-token = "seu_token_de_acesso_aqui"
-
 projetos = fetch_projetos(data_inicio, data_fim, palavras_chave)
 
-fetch_tramitacoes(projetos, token)
+df = create_dataframe(projetos, token)
 
-colunas = ['siglaTipo', 'numero', 'ano', 'ementa', 'situacaoTramitacao']
+def background_color(x):
+    if x.name == 'index':
+        return [''] * len(x)  # Não aplica estilo ao índice
+    else:
+        return ['background-color: transparent'] * len(x)
 
-df = pd.DataFrame(projetos, columns=colunas)
-df['situacaoTramitacao'] = df['situacaoTramitacao'].astype('str')
-df['situacaoTramitacao']=df['situacaoTramitacao'].replace(to_replace='None', value='Não informado')
-df.columns = ["Tipo", "Número", "Ano", "Ementa", "Situação"] 
+def text_color(x):
+    return ['color: #444444'] * len(x)
 
-gb = GridOptionsBuilder()
+def border_color(x):
+    return ['border-color: lightgray'] * len(x)
 
-gb.configure_default_column(
-    resizable=True,
-    filterable=True,
-    sortable=True,
-    editable=False,
-)
+def header_style():
+    return {
+        'selector': 'thead',
+        'props': [('background-color', '#29338e'), ('color', '#29338e')]
+    }
 
-gb.configure_column(field="Tipo",
-                    enableRowGroup=True)
+def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    # Inicializa os estados dos filtros se eles ainda não existirem
+    if 'filter_tipo' not in st.session_state:
+        st.session_state.filter_tipo = df['Tipo'].unique().tolist()
+    if 'filter_ano' not in st.session_state:
+        st.session_state.filter_ano = (int(df['Ano'].min()), int(df['Ano'].max()))
+    if 'filter_situacao' not in st.session_state:
+        st.session_state.filter_situacao = df['Situação'].unique().tolist()
 
-gb.configure_column(field="Número", 
-                    enableRowGroup=True)
+    modify = st.checkbox("Add filters")
 
-gb.configure_column(field="Ano", 
-                    enableRowGroup=True, 
-                    rowGroup=False)
+    if not modify:
+        return df
 
-gb.configure_column(
-    field="Ementa",
-    aggFunc="count"
-)
+    df = df.copy()
+    modification_container = st.container()
 
-gb.configure_column(
-    field="Situação",
-    enableRowGroup=True,
-    aggFunc="count"
-)
+    with modification_container:
+        # Filtro para o Tipo
+        st.session_state.filter_tipo = st.multiselect(
+            "Filter Tipo",
+            df['Tipo'].unique(),
+            default=st.session_state.filter_tipo
+        )
 
-gb.configure_side_bar()
+        # Filtro para o Ano
+        _min, _max = int(df['Ano'].min()), int(df['Ano'].max())
+        st.session_state.filter_ano = st.slider(
+            "Filter Ano",
+            min_value=_min,
+            max_value=_max,
+            value=st.session_state.filter_ano,
+            step=1
+        )
 
-gridOptions = gb.build()
+        # Filtro para a Situação
+        st.session_state.filter_situacao = st.multiselect(
+            "Filter Situação",
+            df['Situação'].unique(),
+            default=st.session_state.filter_situacao
+        )
 
-# column_defs = gridOptions['columnDefs']
-# for col_def in column_defs:
-#     col_name = col_def['field']
-#     if col_name == "Ementa":
-#         max_len = df[col_name].astype(str).str.len().max()
-#         col_def['width'] = max(600, min(500, max_len * 50)) 
-#     elif col_name == "Situação":
-#         max_len = df[col_name].astype(str).str.len().max()
-#         col_def['width'] = max(200, min(500, max_len * 9))  
-#     else:
-#         col_def['width'] = 100
+    # Aplicar filtros
+    df = df[df['Tipo'].isin(st.session_state.filter_tipo)]
+    df = df[df['Ano'].between(*st.session_state.filter_ano)]
+    df = df[df['Situação'].isin(st.session_state.filter_situacao)]
+
+    return df
 
 
-AgGrid(df, gridOptions=gridOptions, columns_auto_size_mode=True)
+filtered_df = filter_dataframe(df)
+
+styled_filtered_df = filtered_df.style.apply(background_color).apply(text_color).apply(border_color).set_table_styles([header_style()])
+
+st.dataframe(styled_filtered_df, use_container_width=True, hide_index=True, height=200)
