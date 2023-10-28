@@ -452,6 +452,9 @@ with col31:
     
     cbar = ax.collections[0].colorbar
     cbar.ax.tick_params(labelsize=9, color='#888888')
+    
+    plot_corr_porte_pf.patch.set_alpha(0)
+    ax.set_facecolor('none')
 
     st.pyplot(plot_corr_porte_pf, use_container_width=True)
 
