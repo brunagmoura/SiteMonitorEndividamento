@@ -455,33 +455,47 @@ with col31:
 
     df_corr_porte_pf = load_df_corr_porte_pf()
 
-    sns.set_theme(style="white")
     corr = df_corr_porte_pf.corr()
+    
+    rename_columns = {
+    'carteira_ativa_baixa renda': 'Carteira ativa - baixa renda',
+    'carteira_ativa_alta renda': 'Carteira ativa - alta renda',
+    'ativo_problematico_baixa renda': 'Ativo problemático - baixa renda',
+    'ativo_problematico_alta renda': 'Ativo problemático - alta renda',
+    'cart. créd. ativos': 'Cartões de crédito ativos'}
+    
+    corr.rename(columns=rename_columns, index=rename_columns, inplace=True)
+    
+    
     mask = np.triu(np.ones_like(corr, dtype=bool))
-    plot_corr_porte_pf, ax = plt.subplots()
-    sns_heatmap = sns.heatmap(corr, mask=mask, cmap='RdBu',
-                          square=True, linewidths=.5, annot=True, annot_kws={"size": 10}, cbar_kws={"shrink": 0.8},
-                          cbar=True)  
-
-    ax.xaxis.tick_bottom()
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-    ax.xaxis.set_label_position('bottom') 
-
-    # Mover os rótulos do eixo Y para a direita
-    ax.yaxis.tick_left()
-    ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
-    ax.yaxis.set_label_position('left')
-
-    # Ajustes adicionais
-    ax.tick_params(axis='both', which='both', labelsize=7, color='#888888')
+    corr_masked = corr.mask(mask)
     
-    cbar = ax.collections[0].colorbar
-    cbar.ax.tick_params(labelsize=9, color='#888888')
-    
-    plot_corr_porte_pf.patch.set_alpha(0)
-    ax.set_facecolor('none')
+    fig = go.Figure(data=go.Heatmap(
+    z=corr_masked,
+    x=corr.columns,
+    y=corr.index,
+    zmin=-1, zmax=1))
 
-    st.pyplot(plot_corr_porte_pf, use_container_width=True)
+    for i, row in enumerate(corr_masked.to_numpy()):
+        for j, value in enumerate(row):
+            if not np.isnan(value):  
+                fig.add_annotation(dict(
+                    font=dict(color="black", size=10),
+                    x=corr.columns[j],
+                    y=corr.index[i],
+                    showarrow=False,
+                    text=f"{value:.2f}",
+                    xref="x",
+                    yref="y"
+                ))
+    fig.update_xaxes(side="bottom", tickangle=90, showgrid=False)
+    fig.update_yaxes(side="left", tickangle=0, showgrid=False)
+
+    fig.update_layout(
+    height=500, margin=dict(t=0, b=0, l=0, r=0),
+    template = "seaborn")
+    
+    st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com prazo de vencimento acima de 360 dias em comparação ao índice de preços ao consumidor amplo (inflação)</div>", unsafe_allow_html=True)
 
