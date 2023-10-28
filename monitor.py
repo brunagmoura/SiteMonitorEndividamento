@@ -491,8 +491,7 @@ with col31:
     fig.update_xaxes(side="bottom", tickangle=90, showgrid=False)
     fig.update_yaxes(side="left", tickangle=0, showgrid=False)
 
-    fig.update_layout(
-    height=500, margin=dict(t=0, b=0, l=0, r=0),
+    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0),
     template = "seaborn")
     
     st.plotly_chart(fig, use_container_width=True)
