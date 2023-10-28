@@ -77,44 +77,52 @@ st.subheader("Como a população brasileira anda se endividando?")
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua ocupação</div>", unsafe_allow_html=True)
 
-pf_ocupacao_modalidade_endividamento = pd.read_csv("pf_ocupacao_modalidade_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
+@st.cache_data
+def load_data():
+    data = pd.read_csv("pf_ocupacao_modalidade_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    data["data_base"] = pd.to_datetime(data["data_base"], format='%Y-%m-%d')
+    return data
 
-pf_ocupacao_modalidade_endividamento["data_base"] = pd.to_datetime(pf_ocupacao_modalidade_endividamento["data_base"], format='%Y-%m-%d')
+@st.cache_data
+def filter_data(data, date1, date2, ocupacao):
+    filtered_data = data[(data["data_base"] >= date1) & (data["data_base"] <= date2)]
+    if ocupacao is not None:
+        filtered_data = filtered_data[filtered_data['ocupacao'] == ocupacao]
+    return filtered_data
 
-pf_ocupacao_modalidade_endividamento_filtrado = pf_ocupacao_modalidade_endividamento[(pf_ocupacao_modalidade_endividamento["data_base"] >= date1) & (pf_ocupacao_modalidade_endividamento["data_base"] <= date2)].copy()
+pf_ocupacao_modalidade_endividamento = load_data()
 
 ocupacao = st.selectbox(
-            'Para qual ocupação você deseja visualizar?',
-            pf_ocupacao_modalidade_endividamento_filtrado['ocupacao'].unique()
-        )
-    
+    'Para qual ocupação você deseja visualizar?',
+    pf_ocupacao_modalidade_endividamento['ocupacao'].unique()
+)
+
+pf_ocupacao_modalidade_endividamento_filtrado = filter_data(pf_ocupacao_modalidade_endividamento, date1, date2, ocupacao)
+
 col1, col2 = st.columns((2))
 
 with col1:
-    
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Modalidades de crédito contratadas</div>", unsafe_allow_html=True)
 
-    pf_ocupacao_modalidade_endividamento_filtrado = pf_ocupacao_modalidade_endividamento_filtrado[pf_ocupacao_modalidade_endividamento_filtrado['ocupacao'] == ocupacao]
-
+    # Criação do gráfico
     plot_pf_ocupacao_modalidade_endividamento = px.line(pf_ocupacao_modalidade_endividamento_filtrado, 
-                 x='data_base',
-                 y='carteira_ativa_deflacionada', 
-                 color='modalidade')
+                                                        x='data_base',
+                                                        y='carteira_ativa_deflacionada', 
+                                                        color='modalidade')
 
     plot_pf_ocupacao_modalidade_endividamento.update_layout(
-    title_text='',
-    xaxis_title='',
-    yaxis_title='Endividamento total',
-    template="seaborn",
-    legend=dict(
-        x=0.5,
-        y=-0.3,
-        orientation='h',
-        xanchor='center'
-    ),
-    xaxis=dict(showgrid=False),
-    margin=dict(t=0, b=0, l=0, r=0)
-)
+        title_text='',
+        xaxis_title='',
+        yaxis_title='Endividamento total',
+        template="seaborn",
+        legend=dict(
+            x=0.5,
+            y=-0.3,
+            orientation='h',
+            xanchor='center'
+        ),
+        xaxis=dict(showgrid=False),
+        margin=dict(t=0, b=0, l=0, r=0)
+    )
     plot_pf_ocupacao_modalidade_endividamento.update_yaxes(showgrid=False)
 
     st.plotly_chart(plot_pf_ocupacao_modalidade_endividamento, use_container_width=True)
@@ -123,55 +131,65 @@ with col2:
     
     st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Estados federativos em que residem os tomadores de crédito com parcelas classificadas como ativo problemático, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
     
-    df_ocupacao_pf_ativoproblematico = pd.read_csv("df_ocupacao_pf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    @st.cache_data
+    def load_df_ocupacao_pf_ativoproblematico():
+        return pd.read_csv("df_ocupacao_pf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-    url = "https://raw.githubusercontent.com/jonates/opendata/master/arquivos_geoespaciais/unidades_da_federacao.json" #Temos que dar os créditos
-    response = requests.get(url)
-    geojson_data = response.json()
+    @st.cache_data
+    def load_geojson_data():
+        url = "https://raw.githubusercontent.com/jonates/opendata/master/arquivos_geoespaciais/unidades_da_federacao.json"
+        response = requests.get(url)
+        return response.json()
 
-
+    df_ocupacao_pf_ativoproblematico = load_df_ocupacao_pf_ativoproblematico()
+    geojson_data = load_geojson_data()
+    
     df_ocupacao_pf_ativoproblematico_filtered = df_ocupacao_pf_ativoproblematico[df_ocupacao_pf_ativoproblematico['ocupacao'] == ocupacao]
 
-
     plot_ocupacao_pf_ativoproblematico = px.choropleth_mapbox(df_ocupacao_pf_ativoproblematico_filtered, 
-                               geojson=geojson_data, 
-                               locations='Estado', 
-                               color='ativo_problematico/pop',
-                               color_continuous_scale="sunsetdark",
-                               range_color=(0, max(df_ocupacao_pf_ativoproblematico_filtered['ativo_problematico/pop'])),
-                               animation_frame='ano', 
-                               mapbox_style="open-street-map",
-                               zoom=1.9, 
-                               center={"lat": -17.14, "lon": -57.33},
-                               opacity=1,
-                               labels={'ativo_problematico/pop':'Ativo problemático/População',
-                                       'uf': 'Unidade da Federação do Brasil'},
-                               featureidkey="properties.NM_ESTADO")
-    
-    plot_ocupacao_pf_ativoproblematico.update_layout(
-    coloraxis_colorbar=dict(
-        len=1, 
-        y=-0.25,  
-        yanchor='bottom',  
-        xanchor='center',
-        x=0.5,   
-        orientation='h',  
-        title="ativo problemático/população",
-        titleside = "bottom"
-    ),
-        margin=dict(t=0, b=0, l=0, r=0)
-)
+                                   geojson=geojson_data, 
+                                   locations='Estado', 
+                                   color='ativo_problematico/pop',
+                                   color_continuous_scale="sunsetdark",
+                                   range_color=(0, max(df_ocupacao_pf_ativoproblematico_filtered['ativo_problematico/pop'])),
+                                   animation_frame='ano', 
+                                   mapbox_style="open-street-map",
+                                   zoom=1.9, 
+                                   center={"lat": -17.14, "lon": -57.33},
+                                   opacity=1,
+                                   labels={'ativo_problematico/pop':'Ativo problemático/População',
+                                           'uf': 'Unidade da Federação do Brasil'},
+                                   featureidkey="properties.NM_ESTADO")
 
-    
+    plot_ocupacao_pf_ativoproblematico.update_layout(
+        coloraxis_colorbar=dict(
+            len=1, 
+            y=-0.25,  
+            yanchor='bottom',  
+            xanchor='center',
+            x=0.5,   
+            orientation='h',  
+            title="ativo problemático/população",
+            titleside = "bottom"
+        ),
+            margin=dict(t=0, b=0, l=0, r=0)
+    )
+
+
     st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua renda</div>", unsafe_allow_html=True)
 
-pf_rendimento_modalidade_noperacoes_endividamento = pd.read_csv("pf_rendimento_modalidade_noperacoes_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
+@st.cache_data
+def load_pf_rendimento_modalidade_noperacoes_endividamento():
+    df = pd.read_csv("pf_rendimento_modalidade_noperacoes_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m-%d')
+    return df
 
-pf_rendimento_modalidade_noperacoes_endividamento["data_base"] = pd.to_datetime(pf_rendimento_modalidade_noperacoes_endividamento["data_base"], format='%Y-%m-%d')
+pf_rendimento_modalidade_noperacoes_endividamento = load_pf_rendimento_modalidade_noperacoes_endividamento()
 
 pf_rendimento_modalidade_noperacoes_endividamento_filtrado = pf_rendimento_modalidade_noperacoes_endividamento[(pf_rendimento_modalidade_noperacoes_endividamento["data_base"] >= date1) & (pf_rendimento_modalidade_noperacoes_endividamento["data_base"] <= date2)].copy()
+
 
 porte = st.selectbox(
     "Para qual faixa rendimento você deseja visualizar?",
@@ -242,9 +260,13 @@ with col21:
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Inserindo dados macroeconômicos na análise</div>", unsafe_allow_html=True)
 
-df_juros_inflacao_modalidade = pd.read_csv("df_juros_inflacao_modalidade.csv", encoding="UTF-8", delimiter=',', decimal='.')
+@st.cache_data
+def load_df_juros_inflacao_modalidade():
+    df = pd.read_csv("df_juros_inflacao_modalidade.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m')
+    return df
 
-df_juros_inflacao_modalidade["data_base"] = pd.to_datetime(df_juros_inflacao_modalidade["data_base"], format='%Y-%m')
+df_juros_inflacao_modalidade = load_df_juros_inflacao_modalidade()
 
 df_juros_inflacao_modalidade_filtrado = df_juros_inflacao_modalidade[(df_juros_inflacao_modalidade["data_base"] >= date1) & (df_juros_inflacao_modalidade["data_base"] <= date2)].copy()
 
@@ -315,9 +337,14 @@ with col30:
     
     st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com vencimento acima de 360 dias por faixa de renda em comparação à taxa de desocupação</div>", unsafe_allow_html=True)
     
-    desemprego_divida_lp = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
+ 
+    @st.cache_data
+    def load_desemprego_divida_lp():
+        df = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
+        df["data"] = pd.to_datetime(df["data"], format='%Y-%m')
+        return df
     
-    desemprego_divida_lp["data"] = pd.to_datetime(desemprego_divida_lp["data"], format='%Y-%m')
+    desemprego_divida_lp = load_desemprego_divida_lp()
 
     desemprego_divida_lp_filtrado = desemprego_divida_lp[(desemprego_divida_lp["data"] >= date1) & (desemprego_divida_lp["data"] <= date2)].copy()
 
@@ -396,7 +423,13 @@ with col31:
     
     st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Correlação entre indicadores macroeconômicos e as parcelas do endividamento total e parcelas com pouca expectativa de pagamento</div>", unsafe_allow_html=True)
     
-    df_corr_porte_pf = pd.read_csv("df_corr_porte_pf.csv", encoding="UTF-8", delimiter=',', decimal='.')
+
+    @st.cache_data
+    def load_df_corr_porte_pf():
+        df = pd.read_csv("df_corr_porte_pf.csv", encoding="UTF-8", delimiter=',', decimal='.')
+        return df
+
+    df_corr_porte_pf = load_df_corr_porte_pf()
 
     sns.set_theme(style="white")
     corr = df_corr_porte_pf.corr()
@@ -425,9 +458,14 @@ with col31:
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com prazo de vencimento acima de 360 dias em comparação ao índice de preços ao consumidor amplo (inflação)</div>", unsafe_allow_html=True)
 
-pf_porte_endividamentolp_inflacao = pd.read_csv("pf_porte_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-pf_porte_endividamentolp_inflacao["data"] = pd.to_datetime(desemprego_divida_lp["data"], format='%Y-%m')
+@st.cache_data
+def load_pf_porte_endividamentolp_inflacao():
+    df = pd.read_csv("pf_porte_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    df["data"] = pd.to_datetime(df["data"], format='%Y-%m')
+    return df
+
+pf_porte_endividamentolp_inflacao = load_pf_porte_endividamentolp_inflacao()
 
 pf_porte_endividamentolp_inflacao_filtrado = pf_porte_endividamentolp_inflacao[(pf_porte_endividamentolp_inflacao["data"] >= date1) & (pf_porte_endividamentolp_inflacao["data"] <= date2)].copy()
 
@@ -490,7 +528,12 @@ st.subheader('Como as empresas andam se financiando?')
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Distribuição dos ativos problemáticos das empresas brasileiras, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
 
-df_corr_ibge_scr_pj = pd.read_csv("df_corr_ibge_scr_pj.csv", encoding="UTF-8", delimiter=',', decimal='.')
+@st.cache_data
+def load_df_corr_ibge_scr_pj():
+    df = pd.read_csv("df_corr_ibge_scr_pj.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    return df
+
+df_corr_ibge_scr_pj = load_df_corr_ibge_scr_pj()
 
 cnae_secao = st.selectbox(
         'Para qual setor de atuação você deseja visualizar?',
@@ -522,8 +565,13 @@ with col5:
 with col6:
     
     st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Estados federativos em que estão localizadas as empresas tomadoras de crédito com parcelas classificadas como ativo problemático que pertencem ao setor de atuação selecionado</div>", unsafe_allow_html=True)
-
-    df_cnae_pj_ativoproblematico = pd.read_csv("df_cnae_pj_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    
+    @st.cache_data
+    def load_df_cnae_pj_ativoproblematico():
+        df = pd.read_csv("df_cnae_pj_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
+        return df
+    
+    df_cnae_pj_ativoproblematico = load_df_cnae_pj_ativoproblematico()
 
     df_cnae_pj_ativoproblematico_filtered = df_cnae_pj_ativoproblematico[df_cnae_pj_ativoproblematico['cnae_secao'] == cnae_secao]
 
@@ -563,9 +611,14 @@ st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>
     
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Modalidades de crédito contratadas pelas micro e pequenas empresas com parcelas cujo vencimento é inferior a 360 dias</div>", unsafe_allow_html=True)
 
-pj_porte_modalidade_endividamentocp = pd.read_csv("pj_porte_modalidade_endividamentocp.csv", encoding="UTF-8", delimiter=',', decimal='.')
+@st.cache_data
+def load_pj_porte_modalidade_endividamentocp():
+    df = pd.read_csv("pj_porte_modalidade_endividamentocp.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m')
+    # Adicione aqui qualquer processamento adicional necessário
+    return df
 
-pj_porte_modalidade_endividamentocp["data_base"] = pd.to_datetime(pj_porte_modalidade_endividamentocp["data_base"], format='%Y-%m')
+pj_porte_modalidade_endividamentocp = load_pj_porte_modalidade_endividamentocp()
 
 pj_porte_modalidade_endividamentocp_filtrado = pj_porte_modalidade_endividamentocp[(pj_porte_modalidade_endividamentocp["data_base"] >= date1) & (pj_porte_modalidade_endividamentocp["data_base"] <= date2)].copy()
 
@@ -624,9 +677,14 @@ st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>
 
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Distribuição do endividamento nas principais áreas de atuação das empresas do setor de agricultura, pecuária, produção florestal, pesca e aquicultura em dezembro-2022</div>", unsafe_allow_html=True)
 
-pj_cnaesecao_cnaesubclasse_endividamento = pd.read_csv("pj_cnaesecao_cnaesubclasse_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-pj_cnaesecao_cnaesubclasse_endividamento["data_base"] = pd.to_datetime(pj_cnaesecao_cnaesubclasse_endividamento["data_base"], format='%Y-%m')
+@st.cache_data
+def load_pj_cnaesecao_cnaesubclasse_endividamento():
+    df = pd.read_csv("pj_cnaesecao_cnaesubclasse_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
+    df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m')
+    return df
+
+pj_cnaesecao_cnaesubclasse_endividamento = load_pj_cnaesecao_cnaesubclasse_endividamento()
 
 pj_cnaesecao_cnaesubclasse_endividamento_filtrado = pj_cnaesecao_cnaesubclasse_endividamento[(pj_cnaesecao_cnaesubclasse_endividamento["data_base"] >= date1) & (pj_cnaesecao_cnaesubclasse_endividamento["data_base"] <= date2)].copy()
 
@@ -654,12 +712,51 @@ st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>
 st.markdown("<div style='text-align: center; color: #666666; font-size: 1em;'>A busca utiliza a API da Câmara dos Deputados, módulo proposições, e se refere aos projetos de lei e medidas provisórias que tenham como palavras-chave termos relacionados ao endividamento da população brasileira.</div>", unsafe_allow_html=True)
 
 #API Câmara dos Deputados
+# Função para buscar projetos da API da Câmara dos Deputados
+@st.cache_data(ttl=3600)  # Cache expira a cada hora (3600 segundos)
+def fetch_projetos(data_inicio, data_fim, palavras_chave):
+    url = "https://dadosabertos.camara.leg.br/api/v2/proposicoes"
+    params = {
+        "dataInicio": data_inicio,
+        "dataFim": data_fim,
+        "ordenarPor": "id",
+        "itens": 100,
+        "pagina": 1,
+        "siglaTipo": ["PL", "PLP", "MPV"],
+        "keywords": palavras_chave
+    }
 
-# Definir a URL da API para o endpoint de projetos
-url = "https://dadosabertos.camara.leg.br/api/v2/proposicoes"
+    projetos = []
+    while True:
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            dados = response.json()["dados"]
+            if len(dados) == 0:
+                break
+            projetos.extend([projeto for projeto in dados if any(palavra in projeto["ementa"].lower() for palavra in palavras_chave)])
+            params["pagina"] += 1
+        else:
+            print("Erro ao fazer requisição para a API:", response.status_code)
+            break
+    return projetos
 
-# Definir os parâmetros da requisição
-data_inicio = (datetime.datetime.now() - datetime.timedelta(days=360)).strftime("%Y-%m-%d")
+# Função para buscar tramitações das proposições
+def fetch_tramitacoes(projetos, token):
+    for proposicao in projetos:
+        id_proposicao = proposicao['id']
+        url_tramitacoes = f"https://dadosabertos.camara.leg.br/api/v2/proposicoes/{id_proposicao}/tramitacoes"
+        response_tramitacoes = requests.get(url_tramitacoes, headers={"Authorization": f"Bearer {token}"})
+
+        if response_tramitacoes.status_code == 200:
+            tramitacoes = response_tramitacoes.json()['dados']
+            ultima_tramitacao = tramitacoes[-1] if tramitacoes else None
+            situacao_tramitacao = ultima_tramitacao['descricaoSituacao'] if ultima_tramitacao else "Sem tramitações"
+            proposicao['situacaoTramitacao'] = situacao_tramitacao
+        else:
+            print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
+
+# Configuração dos parâmetros para a chamada da função
+data_inicio = (datetime.datetime.now() - datetime.timedelta(days=180)).strftime("%Y-%m-%d")
 data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
 palavras_chave = [ 
 "superendividamento",
@@ -681,64 +778,12 @@ palavras_chave = [
 "ativo problemático",
 "crédito a vencer"
 ]
-params = {
-    "dataInicio": data_inicio,
-    "dataFim": data_fim,
-    "ordenarPor": "id",
-    "itens": 100,  # Quantidade de itens por página
-    "pagina": 1,   # Começar pela primeira página
-    "siglaTipo": ["PL", "PLP", "MPV"],
-    "keywords": palavras_chave
-}
-# Definir as palavras-chave que deseja filtrar na ementa dos projetos
-
-# Fazer requisições para todas as páginas de resultados
-projetos = []
-while True:
-    # Fazer a requisição para a API
-    response = requests.get(url, params=params)
-    # Verificar se a requisição foi bem-sucedida
-    if response.status_code == 200:
-        # Acessar o conteúdo da resposta em formato JSON
-        dados = response.json()["dados"]
-        # Verificar se há projetos na página atual
-        if len(dados) == 0:
-            break
-        # Filtrar os projetos que contêm pelo menos uma palavra-chave na ementa
-        projetos.extend([projeto for projeto in dados if any(palavra in projeto["ementa"].lower() for palavra in palavras_chave)])
-        # Avançar para a próxima página
-        params["pagina"] += 1
-    else:
-        print("Erro ao fazer requisição para a API:", response.status_code)
-        break
 
 token = "seu_token_de_acesso_aqui"
 
-# Definir o período de tempo desejado (última semana)
-data_atual = dt.now()
-data_inicio = data_atual - timedelta(days=7)
+projetos = fetch_projetos(data_inicio, data_fim, palavras_chave)
 
-# Percorrer a lista de proposições
-for proposicao in projetos:
-    id_proposicao = proposicao['id']
-    
-    # Fazer uma chamada ao endpoint /proposicoes/{id}/tramitacoes para obter as tramitações da proposição
-    url_tramitacoes = f"https://dadosabertos.camara.leg.br/api/v2/proposicoes/{id_proposicao}/tramitacoes"
-    response_tramitacoes = requests.get(url_tramitacoes, headers={"Authorization": f"Bearer {token}"})
-    
-    if response_tramitacoes.status_code == 200:
-        tramitacoes = response_tramitacoes.json()['dados']
-        
-        # Obter a última tramitação da proposição
-        ultima_tramitacao = tramitacoes[-1]
-        
-        # Extrair a situação de tramitação dessa última tramitação
-        situacao_tramitacao = ultima_tramitacao['descricaoSituacao']
-        
-        # Adicionar a situação de tramitação à proposição
-        proposicao['situacaoTramitacao'] = situacao_tramitacao
-    else:
-        print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
+fetch_tramitacoes(projetos, token)
 
 colunas = ['siglaTipo', 'numero', 'ano', 'ementa', 'situacaoTramitacao']
 
@@ -754,51 +799,42 @@ css_style = """
 <style>
 /* Estilo para o contêiner com barra de rolagem */
 .scrollable-table {
-  height: 700px !important;
+  max-height: 70vh; /* Altura máxima baseada na altura da janela de visualização */
   width: 100%;
-  overflow-y: scroll;
-  background-color: #fff; /* Cor de fundo do contêiner */
+  overflow-y: auto; /* A barra de rolagem aparece apenas quando necessário */
+  background-color: #f8f9fa; /* Fundo claro */
 }
 
 /* Estilizando a barra de rolagem */
 .scrollable-table::-webkit-scrollbar {
   width: 12px; /* Largura da barra de rolagem */
-  background-color: #f0f0f0; /* Cor de fundo da barra de rolagem */
 }
 
 .scrollable-table::-webkit-scrollbar-thumb {
-  background-color: #888; /* Cor da barra de rolagem */
+  background-color: #6c757d; /* Cor da barra de rolagem */
 }
 
 /* Estilo para o cabeçalho da tabela */
 .table thead {
-  background-color: #363636; /* Cor de fundo do cabeçalho */
-  color: #fff; /* Cor do texto do cabeçalho */
+  background-color: #363636; /* Azul */
+  color: #ffffff; /* Texto branco para contraste */
 }
 
-/* Estilizando as colunas centralizadas */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center; /* Centraliza o texto nas colunas */
-}
-
-/* Estilo para linhas ímpares (cinza claro) após o cabeçalho */
+/* Estilo para as células da tabela */
 .table tbody tr:nth-child(odd) {
-  background-color: #DCDCDC; /* Cor de fundo cinza claro */
+  background-color: #e9ecef; /* Cinza claro para linhas ímpares */
 }
 
-/* Estilo para linhas pares (cinza médio) após o cabeçalho */
 .table tbody tr:nth-child(even) {
-  background-color: #F8F8FF; /* Cor de fundo cinza médio */
+  background-color: #dee2e6; /* Cinza um pouco mais escuro para linhas pares */
 }
 
-/* Resto do seu estilo CSS aqui */
+/* Texto e alinhamento das células */
+.table th, .table td {
+  text-align: center;
+  padding: 8px;
+}
+
 </style>
 
 """
