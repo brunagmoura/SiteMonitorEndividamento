@@ -753,8 +753,7 @@ def fetch_tramitacoes(id_proposicao, token):
     else:
         print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
         return "Erro na tramitação"
-    
-    
+
 def create_dataframe(projetos, token):
     for proposicao in projetos:
         id_proposicao = proposicao['id']
@@ -765,6 +764,7 @@ def create_dataframe(projetos, token):
     df = pd.DataFrame(projetos, columns=colunas)
     df['situacaoTramitacao'] = df['situacaoTramitacao'].astype('str')
     df['situacaoTramitacao'] = df['situacaoTramitacao'].replace(to_replace='None', value='Não informado')
+    
     df['ano'] = df['ano'].astype('int')
     df['numero'] = df['numero'].astype('int')
     df['numero'] = df['numero'].apply(lambda x: f"{x:,}".replace(',', '.'))
@@ -772,7 +772,7 @@ def create_dataframe(projetos, token):
     return df
 
 token = "seu_token_de_acesso_aqui"
-data_inicio = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
+data_inicio = (datetime.datetime.now() - datetime.timedelta(days=180)).strftime("%Y-%m-%d")
 data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
 palavras_chave = [ 
 "superendividamento",
@@ -852,7 +852,11 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-
 filtered_df = filter_dataframe(df)
 
-st.dataframe(filtered_df, use_container_width=True, hide_index=True, height=500)
+def formatar_numero(valor):
+    return f"{valor}"
+
+dados_formatados = filtered_df.style.format({'Número': formatar_numero})
+
+st.dataframe(dados_formatados, use_container_width=True, hide_index=True, height=500)
