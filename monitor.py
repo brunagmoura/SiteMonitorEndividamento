@@ -13,7 +13,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime as dt, timedelta
-import streamlit.components.v1 as components
+from st_aggrid import AgGrid, GridOptionsBuilder
 
 warnings.filterwarnings('ignore')
 
@@ -77,13 +77,13 @@ st.subheader("Como a população brasileira anda se endividando?")
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua ocupação</div>", unsafe_allow_html=True)
 
-@st.cache_data
+@st.cache_data()
 def load_data():
     data = pd.read_csv("pf_ocupacao_modalidade_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
     data["data_base"] = pd.to_datetime(data["data_base"], format='%Y-%m-%d')
     return data
 
-@st.cache_data
+@st.cache_data()
 def filter_data(data, date1, date2, ocupacao):
     filtered_data = data[(data["data_base"] >= date1) & (data["data_base"] <= date2)]
     if ocupacao is not None:
@@ -131,11 +131,11 @@ with col2:
     
     st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Estados federativos em que residem os tomadores de crédito com parcelas classificadas como ativo problemático, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
     
-    @st.cache_data
+    @st.cache_data()
     def load_df_ocupacao_pf_ativoproblematico():
         return pd.read_csv("df_ocupacao_pf_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
-    @st.cache_data
+    @st.cache_data()
     def load_geojson_data():
         url = "https://raw.githubusercontent.com/jonates/opendata/master/arquivos_geoespaciais/unidades_da_federacao.json"
         response = requests.get(url)
@@ -180,7 +180,7 @@ with col2:
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua renda</div>", unsafe_allow_html=True)
 
-@st.cache_data
+@st.cache_data()
 def load_pf_rendimento_modalidade_noperacoes_endividamento():
     df = pd.read_csv("pf_rendimento_modalidade_noperacoes_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
     df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m-%d')
@@ -260,7 +260,7 @@ with col21:
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Inserindo dados macroeconômicos na análise</div>", unsafe_allow_html=True)
 
-@st.cache_data
+@st.cache_data()
 def load_df_juros_inflacao_modalidade():
     df = pd.read_csv("df_juros_inflacao_modalidade.csv", encoding="UTF-8", delimiter=',', decimal='.')
     df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m')
@@ -338,7 +338,7 @@ with col30:
     st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com vencimento acima de 360 dias por faixa de renda em comparação à taxa de desocupação</div>", unsafe_allow_html=True)
     
  
-    @st.cache_data
+    @st.cache_data()
     def load_desemprego_divida_lp():
         df = pd.read_csv("df_desemprego_divida_grupo.csv", encoding="UTF-8", delimiter=',', decimal='.')
         df["data"] = pd.to_datetime(df["data"], format='%Y-%m')
@@ -424,7 +424,7 @@ with col31:
     st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Correlação entre indicadores macroeconômicos e as parcelas do endividamento total e parcelas com pouca expectativa de pagamento</div>", unsafe_allow_html=True)
     
 
-    @st.cache_data
+    @st.cache_data()
     def load_df_corr_porte_pf():
         df = pd.read_csv("df_corr_porte_pf.csv", encoding="UTF-8", delimiter=',', decimal='.')
         return df
@@ -459,7 +459,7 @@ with col31:
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com prazo de vencimento acima de 360 dias em comparação ao índice de preços ao consumidor amplo (inflação)</div>", unsafe_allow_html=True)
 
 
-@st.cache_data
+@st.cache_data()
 def load_pf_porte_endividamentolp_inflacao():
     df = pd.read_csv("pf_porte_endividamentolp_inflacao.csv", encoding="UTF-8", delimiter=',', decimal='.')
     df["data"] = pd.to_datetime(df["data"], format='%Y-%m')
@@ -528,7 +528,7 @@ st.subheader('Como as empresas andam se financiando?')
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>Distribuição dos ativos problemáticos das empresas brasileiras, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
 
-@st.cache_data
+@st.cache_data()
 def load_df_corr_ibge_scr_pj():
     df = pd.read_csv("df_corr_ibge_scr_pj.csv", encoding="UTF-8", delimiter=',', decimal='.')
     return df
@@ -566,7 +566,7 @@ with col6:
     
     st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Estados federativos em que estão localizadas as empresas tomadoras de crédito com parcelas classificadas como ativo problemático que pertencem ao setor de atuação selecionado</div>", unsafe_allow_html=True)
     
-    @st.cache_data
+    @st.cache_data()
     def load_df_cnae_pj_ativoproblematico():
         df = pd.read_csv("df_cnae_pj_ativoproblematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
         return df
@@ -611,7 +611,7 @@ st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>
     
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Modalidades de crédito contratadas pelas micro e pequenas empresas com parcelas cujo vencimento é inferior a 360 dias</div>", unsafe_allow_html=True)
 
-@st.cache_data
+@st.cache_data()
 def load_pj_porte_modalidade_endividamentocp():
     df = pd.read_csv("pj_porte_modalidade_endividamentocp.csv", encoding="UTF-8", delimiter=',', decimal='.')
     df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m')
@@ -678,7 +678,7 @@ st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;'>
 st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Distribuição do endividamento nas principais áreas de atuação das empresas do setor de agricultura, pecuária, produção florestal, pesca e aquicultura em dezembro-2022</div>", unsafe_allow_html=True)
 
 
-@st.cache_data
+@st.cache_data()
 def load_pj_cnaesecao_cnaesubclasse_endividamento():
     df = pd.read_csv("pj_cnaesecao_cnaesubclasse_endividamento.csv", encoding="UTF-8", delimiter=',', decimal='.')
     df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m')
@@ -756,7 +756,7 @@ def fetch_tramitacoes(projetos, token):
             print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
 
 # Configuração dos parâmetros para a chamada da função
-data_inicio = (datetime.datetime.now() - datetime.timedelta(days=180)).strftime("%Y-%m-%d")
+data_inicio = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
 data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
 palavras_chave = [ 
 "superendividamento",
@@ -791,70 +791,52 @@ df = pd.DataFrame(projetos, columns=colunas)
 df['situacaoTramitacao'] = df['situacaoTramitacao'].astype('str')
 df['situacaoTramitacao']=df['situacaoTramitacao'].replace(to_replace='None', value='Não informado')
 df.columns = ["Tipo", "Número", "Ano", "Ementa", "Situação"] 
-tabela_html = df.to_html(index=False, classes='table table-bordered')
 
-# Adicionando estilos CSS para combinar com o estilo Seaborn
+gb = GridOptionsBuilder()
 
-css_style = """
-<style>
-/* Estilo para o contêiner com barra de rolagem */
-.scrollable-table {
-  max-height: 70vh; /* Altura máxima baseada na altura da janela de visualização */
-  width: 100%;
-  overflow-y: auto; /* A barra de rolagem aparece apenas quando necessário */
-  background-color: #f8f9fa; /* Fundo claro */
-}
+gb.configure_default_column(
+    resizable=True,
+    filterable=True,
+    sortable=True,
+    editable=False,
+)
 
-/* Estilizando a barra de rolagem */
-.scrollable-table::-webkit-scrollbar {
-  width: 12px; /* Largura da barra de rolagem */
-}
+gb.configure_column(field="Tipo",
+                    enableRowGroup=True)
 
-.scrollable-table::-webkit-scrollbar-thumb {
-  background-color: #6c757d; /* Cor da barra de rolagem */
-}
+gb.configure_column(field="Número", 
+                    enableRowGroup=True)
 
-/* Estilo para o cabeçalho da tabela */
-.table thead {
-  background-color: #363636; /* Azul */
-  color: #ffffff; /* Texto branco para contraste */
-}
+gb.configure_column(field="Ano", 
+                    enableRowGroup=True, 
+                    rowGroup=False)
 
-/* Estilo para as células da tabela */
-.table tbody tr:nth-child(odd) {
-  background-color: #e9ecef; /* Cinza claro para linhas ímpares */
-}
+gb.configure_column(
+    field="Ementa",
+    aggFunc="count"
+)
 
-.table tbody tr:nth-child(even) {
-  background-color: #dee2e6; /* Cinza um pouco mais escuro para linhas pares */
-}
+gb.configure_column(
+    field="Situação",
+    enableRowGroup=True,
+    aggFunc="count"
+)
 
-/* Texto e alinhamento das células */
-.table th, .table td {
-  text-align: center;
-  padding: 8px;
-}
+gb.configure_side_bar()
 
-</style>
+gridOptions = gb.build()
 
-"""
+# column_defs = gridOptions['columnDefs']
+# for col_def in column_defs:
+#     col_name = col_def['field']
+#     if col_name == "Ementa":
+#         max_len = df[col_name].astype(str).str.len().max()
+#         col_def['width'] = max(600, min(500, max_len * 50)) 
+#     elif col_name == "Situação":
+#         max_len = df[col_name].astype(str).str.len().max()
+#         col_def['width'] = max(200, min(500, max_len * 9))  
+#     else:
+#         col_def['width'] = 100
 
-# Incorporando o HTML do DataFrame na estrutura do contêiner com rolagem
-html = f"""
-<!DOCTYPE html>
-<html>
-<head>
-{css_style}
-</head>
-<body>
-<div class="scrollable-table">
-  <table class="table table-bordered">
-    {tabela_html}
-  </table>
-</div>
-</body>
-</html>
-"""
 
-st.markdown(html, unsafe_allow_html=True)
-
+AgGrid(df, gridOptions=gridOptions, columns_auto_size_mode=True)
