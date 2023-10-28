@@ -16,7 +16,8 @@ from datetime import datetime as dt, timedelta
 
 warnings.filterwarnings('ignore')
 
-st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", menu_items={"About": "Link ou descrição aqui"})
+st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", 
+                   menu_items={'About': "Teste"})
 
 
 #Desabilitar o hover no celular
@@ -133,7 +134,8 @@ with col1:
             xanchor='center'
         ),
         xaxis=dict(showgrid=False),
-        margin=dict(t=0, b=0, l=0, r=0)
+        margin=dict(t=0, b=0, l=0, r=0),
+        dragmode=False
     )
     plot_pf_ocupacao_modalidade_endividamento.update_yaxes(showgrid=False)
 
@@ -184,9 +186,11 @@ with col2:
             title="ativo problemático/população",
             titleside = "bottom"
         ),
-            margin=dict(t=0, b=0, l=0, r=0)
-    )
-
+            margin=dict(t=0, b=0, l=0, r=0),
+        xaxis_fixedrange=True,
+        yaxis_fixedrange=True,
+        autosize=False,
+        dragmode='select')
 
     st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True)
 
@@ -242,7 +246,8 @@ with col20:
         showgrid=False, 
         title='Endividamento de longo prazo'
     ),
-    margin=dict(t=0, b=0, l=0, r=0)
+    margin=dict(t=0, b=0, l=0, r=0),
+    dragmode=False
 )
 
     st.plotly_chart(plot_rendimento_modalidade_noperacoes, use_container_width=True)
@@ -271,7 +276,8 @@ with col21:
         ),
         xaxis=dict(showgrid=False),
         yaxis=dict(showgrid=False),
-        margin=dict(t=0, b=0, l=0, r=0)
+        margin=dict(t=0, b=0, l=0, r=0),
+        dragmode=False
     )
         
     st.plotly_chart(plot_rendimento_modalidade_noperacoes, use_container_width=True)
@@ -340,7 +346,8 @@ def create_figure(yaxis_column_name):
             title=yaxis_column_name
         ),
         margin=dict(t=0, l=0, r=0, b=0),
-        showlegend = True
+        showlegend = True,
+        dragmode=False
     )
         
     return plot_juros_inflacao_modalidade
@@ -425,12 +432,12 @@ with col30:
         template="seaborn",
         legend_title_text='categorias de renda',
         legend=dict(
-            x=0.5,  # Centraliza a legenda no eixo x
+            x=0.5,  
             y=-0.2,
             traceorder='normal',
             orientation='h',
-            xanchor='center',  # Ancora o centro da legenda no ponto x
-            yanchor='top'      # Ancora a parte superior da legenda no ponto y
+            xanchor='center',  
+            yanchor='top'      
         ),  
         xaxis=dict(showgrid=False),
         yaxis=dict(
@@ -438,7 +445,8 @@ with col30:
             title="Taxa de desocupação"
         ),
         showlegend = True,
-        margin=dict(t=0, b=0, l=0, r=0)
+        margin=dict(t=0, b=0, l=0, r=0),
+        dragmode=False
     )
 
     st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
@@ -494,7 +502,8 @@ with col31:
     fig.update_yaxes(side="left", tickangle=0, showgrid=False)
 
     fig.update_layout(margin=dict(t=0, b=0, l=0, r=0),
-    template = "seaborn")
+    template = "seaborn",
+    dragmode=False)
     
     st.plotly_chart(fig, use_container_width=True)
 
@@ -559,7 +568,8 @@ plot_pf_porte_endividamentolp_inflacao.update_layout(
     ),
     template="seaborn",
     showlegend = True,
-    legend_title_text='modalidade'
+    legend_title_text='modalidade',
+    dragmode=False
 )
 
 st.plotly_chart(plot_pf_porte_endividamentolp_inflacao, use_container_width=True)
@@ -602,7 +612,8 @@ with col5:
                                         margin=dict(t=0, l=0, r=0, b=0),
                                         template = "seaborn",
                                        xaxis_title='Ativo problemático',
-                                       xaxis=dict(showgrid=False))
+                                       xaxis=dict(showgrid=False),
+                                       dragmode=False)
     
     plot_corr_ibge_scr_pj.update_yaxes(showgrid=False)
     
@@ -648,7 +659,8 @@ with col6:
         title="ativo problemático/população",
         titleside = "bottom"
     ),
-        margin=dict(t=0, b=0, l=0, r=0)
+        margin=dict(t=0, b=0, l=0, r=0),
+        dragmode='select'
 )
 
     
@@ -689,9 +701,13 @@ plot_pj_porte_modalidade_endividamentocp.update_layout(
     yaxis_title="Endividamento de curto prazo",
     legend_title_text='modalidade',
     legend=dict(x=0.5, y=-0.17, xanchor='center', yanchor='top', orientation = 'h'),
-    xaxis=dict(dtick="M24"),
-    xaxis2=dict(dtick="M24")
+    xaxis=dict(dtick="M12"),
+    xaxis2=dict(dtick="M12"),
+    dragmode=False,
+    yaxis=dict(showgrid=False)
 )
+
+plot_pj_porte_modalidade_endividamentocp.update_yaxes(showgrid=False)
 
 st.plotly_chart(plot_pj_porte_modalidade_endividamentocp, use_container_width=True)
 
@@ -720,9 +736,13 @@ plot_micro_peq_problematico.update_layout(
     yaxis_title="Endividamento de curto prazo e ativo problemático, em que há pouca expectativa de pagamento",
     legend_title_text='tipo de endividamento',
     legend=dict(x=0.5, y=-0.15, xanchor='center', yanchor='top', orientation = 'h'),
-        xaxis=dict(dtick="M24"),
-        xaxis2=dict(dtick="M24")
+        xaxis=dict(dtick="M12"),
+        xaxis2=dict(dtick="M12"),
+    dragmode=False,
+    yaxis=dict(showgrid=False)
 )
+
+plot_micro_peq_problematico.update_yaxes(showgrid=False)
 
 st.plotly_chart(plot_micro_peq_problematico, use_container_width=True)
 
@@ -753,7 +773,8 @@ plot_pj_cnaesecao_cnaesubclasse_endividamento = px.treemap(pj_cnaesecao_cnaesubc
 
 plot_pj_cnaesecao_cnaesubclasse_endividamento.update_layout(title='',
                   margin=dict(t=0, l=0, r=0, b=0),
-                 template = "seaborn")
+                template = "seaborn",
+                  dragmode=False)
 
 plot_pj_cnaesecao_cnaesubclasse_endividamento.update_traces(textinfo='label+percent entry',
                  marker_line_width = 1,
@@ -922,3 +943,21 @@ dados_formatados = filtered_df.style.format({'Número': formatar_numero,
                                             'Ano': formatar_numero})
 
 st.dataframe(dados_formatados, use_container_width=True, hide_index=True, height=500)
+
+#Última atualização
+
+url = "https://api.github.com/repos/brunagmoura/SiteMonitorEndividamento/commits"
+
+@st.cache_data
+def get_last_commit_date(url):
+    response = requests.get(url)
+    last_commit = response.json()[0]
+    return last_commit['commit']['committer']['date']
+
+last_update = get_last_commit_date(url)
+if last_update != "Não foi possível obter as informações":
+    last_update = dt.fromisoformat(last_update[:-1]) - timedelta(hours=3)
+    last_update = last_update.strftime("%d/%m/%Y %H:%M:%S")
+
+# Exibe no Streamlit
+st.warning(f"Esse site é atualizado automaticamente de acordo com a disponibilização de informações no Painel de Operações de Crédito, do Banco Central do Brasil. A última atualização foi em {last_update}.", icon = "🤖")
