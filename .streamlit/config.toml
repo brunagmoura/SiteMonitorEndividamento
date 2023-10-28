@@ -1,8 +1,5 @@
 [theme]
 font = "monospace"
-primaryColor="#355ad2"
-backgroundColor="#355ad2"
-secondaryBackgroundColor="#F0F2F6"
 
 [client]
 toolbarMode = "minimal"
