@@ -33,8 +33,7 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 # </style>
 # """
 
-# Adicionando o CSS na aplicação
-st.markdown(disable_hover_plotly_css, unsafe_allow_html=True)
+#st.markdown(disable_hover_plotly_css, unsafe_allow_html=True)
 
 #Início da página
 
