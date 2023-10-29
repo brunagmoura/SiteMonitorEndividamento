@@ -22,16 +22,16 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 
 #Desabilitar o hover no celular
 
-disable_hover_plotly_css = """
-<style>
-@media (hover: none), (pointer: coarse) {
-    /* Desativar hover nos elementos Plotly com a classe 'nsewdrag drag' */
-    .nsewdrag.drag {
-        pointer-events: none !important;
-    }
-}
-</style>
-"""
+# disable_hover_plotly_css = """
+# <style>
+# @media (hover: none), (pointer: coarse) {
+#     /* Desativar hover nos elementos Plotly com a classe 'nsewdrag drag' */
+#     .nsewdrag.drag {
+#         pointer-events: none !important;
+#     }
+# }
+# </style>
+# """
 
 # Adicionando o CSS na aplicação
 st.markdown(disable_hover_plotly_css, unsafe_allow_html=True)
