@@ -671,7 +671,7 @@ st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;ma
 def load_pj_porte_modalidade_endividamentocp():
     df = pd.read_csv("pj_porte_modalidade_endividamentocp.csv", encoding="UTF-8", delimiter=',', decimal='.')
     df["data_base"] = pd.to_datetime(df["data_base"], format='%Y-%m')
-    # Adicione aqui qualquer processamento adicional necessário
+    df['modalidade'] = df['modalidade'].replace('Financiamento de infraestrutura/desenvolvimento/projeto e outros créditos', 'Financiamento de infraestrutura')
     return df
 
 pj_porte_modalidade_endividamentocp = load_pj_porte_modalidade_endividamentocp()
@@ -689,8 +689,8 @@ plot_pj_porte_modalidade_endividamentocp = px.line(pj_porte_modalidade_endividam
 
 plot_pj_porte_modalidade_endividamentocp.update_layout(
     title='',
-    legend=dict(x=0.7, 
-                y=-0.4, 
+    legend=dict(x=0.5, 
+                y=-0.2, 
                 xanchor='center', 
                 yanchor='top', 
                 orientation = 'h',
