@@ -689,8 +689,8 @@ plot_pj_porte_modalidade_endividamentocp = px.line(pj_porte_modalidade_endividam
 
 plot_pj_porte_modalidade_endividamentocp.update_layout(
     title='',
-    legend=dict(x=0.5, 
-                y=-0.3, 
+    legend=dict(x=0.7, 
+                y=-0.4, 
                 xanchor='center', 
                 yanchor='top', 
                 orientation = 'h',
