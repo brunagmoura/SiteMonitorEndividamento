@@ -114,7 +114,7 @@ col1, col2 = st.columns((2))
 
 with col1:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento dos tomadores de crédito selecionados de acordo com a modalidade da operação e considerando todos os prazos de vencimento</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Endividamento dos tomadores de crédito selecionados de acordo com a modalidade da operação e considerando todos os prazos de vencimento</div>", unsafe_allow_html=True)
     
     # Criação do gráfico
     plot_pf_ocupacao_modalidade_endividamento = px.line(pf_ocupacao_modalidade_endividamento_filtrado, 
@@ -122,28 +122,30 @@ with col1:
                                                         y='carteira_ativa_deflacionada', 
                                                         color='modalidade')
 
-    plot_pf_ocupacao_modalidade_endividamento.update_layout(
-        title_text='',
-        xaxis_title='',
-        yaxis_title='Endividamento total',
-        template="seaborn",
+    plot_pf_ocupacao_modalidade_endividamento.update_layout(template="seaborn",
         legend=dict(
-            x=0.5,
-            y=-0.3,
+            x=0.5,  
+            y=-0.2,
+            traceorder='normal',
             orientation='h',
-            xanchor='center'
+            xanchor='center',  
+            yanchor='top'      
         ),
-        xaxis=dict(showgrid=False),
+        yaxis=dict(
+            showgrid=False,
+            title="Endividamento total"
+        ),
+        xaxis=dict(showgrid=False,
+                  title="Ano"),
         margin=dict(t=0, b=0, l=0, r=0),
         dragmode=False
     )
-    plot_pf_ocupacao_modalidade_endividamento.update_yaxes(showgrid=False)
-
+        
     st.plotly_chart(plot_pf_ocupacao_modalidade_endividamento, use_container_width=True)
 
 with col2:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Estados federativos em que residem os tomadores de crédito com parcelas classificadas como ativo problemático, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Estados em que residem os tomadores de crédito com parcelas classificadas como ativo problemático, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
     
     @st.cache_data()
     def load_df_ocupacao_pf_ativoproblematico():
@@ -164,12 +166,12 @@ with col2:
                                    geojson=geojson_data, 
                                    locations='Estado', 
                                    color='ativo_problematico/pop',
-                                   color_continuous_scale="sunsetdark",
+                                   color_continuous_scale="YlOrRd",
                                    range_color=(0, max(df_ocupacao_pf_ativoproblematico_filtered['ativo_problematico/pop'])),
                                    animation_frame='ano', 
                                    mapbox_style="open-street-map",
-                                   zoom=1.9, 
-                                   center={"lat": -17.14, "lon": -57.33},
+                                   zoom=2.2, 
+                                   center={"lat": -15, "lon": -57.33},
                                    opacity=1,
                                    labels={'ativo_problematico/pop':'Ativo problemático/População',
                                            'uf': 'Unidade da Federação do Brasil'},
@@ -183,15 +185,11 @@ with col2:
             xanchor='center',
             x=0.5,   
             orientation='h',  
-            title="ativo problemático/população",
+            title="Ativo problemático/População",
             titleside = "bottom"
         ),
-            margin=dict(t=0, b=0, l=0, r=0),
-        xaxis_fixedrange=True,
-        yaxis_fixedrange=True,
-        autosize=False,
-        dragmode='select')
-
+            margin=dict(t=0, b=0, l=0, r=0))
+    
     st.plotly_chart(plot_ocupacao_pf_ativoproblematico,use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;'>Endividamento dos brasileiros pessoas físicas de acordo com a sua renda</div>", unsafe_allow_html=True)
@@ -221,7 +219,7 @@ porte = st.selectbox(
 col20, col21 = st.columns((2))
 
 with col20:
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com vencimento acima de 360 dias em relação às modalidades de crédito contratadas pelas pessoas físicas da faixa de renda selecionada</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Endividamento com vencimento acima de 360 dias em relação às modalidades de crédito contratadas pelas pessoas físicas da faixa de renda selecionada</div>", unsafe_allow_html=True)
     
     pf_rendimento_modalidade_noperacoes_endividamento_filtrado = pf_rendimento_modalidade_noperacoes_endividamento_filtrado[pf_rendimento_modalidade_noperacoes_endividamento_filtrado['porte'] == porte]
 
@@ -232,29 +230,28 @@ with col20:
 
     plot_rendimento_modalidade_noperacoes.update_layout(
     title_text='',
-    xaxis_title='',
-    yaxis_title='Endividamento de longo prazo',
     template="seaborn",
     legend=dict(
         x=0.5,
-        y=-0.3,
+        y=-0.2,
         orientation='h',
-        xanchor='center'
+        xanchor='center',
+        traceorder='normal',
     ),
-    xaxis=dict(showgrid=False),
+    xaxis=dict(showgrid=False, title='Ano'),
     yaxis=dict(
         showgrid=False, 
         title='Endividamento de longo prazo'
     ),
     margin=dict(t=0, b=0, l=0, r=0),
     dragmode=False
-)
-
+    ) 
+        
     st.plotly_chart(plot_rendimento_modalidade_noperacoes, use_container_width=True)
 
 with col21:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Quantidade de operações totais (para qualquer vencimento) em relação às modalidades de crédito contratadas pelas pessoas físicas da faixa de renda selecionada</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Quantidade de operações totais em relação às modalidades de crédito contratadas pelas pessoas físicas da faixa de renda selecionada</div>", unsafe_allow_html=True)
 
     pf_rendimento_modalidade_noperacoes_endividamento_filtrado = pf_rendimento_modalidade_noperacoes_endividamento_filtrado[pf_rendimento_modalidade_noperacoes_endividamento_filtrado['porte'] == porte]
 
@@ -265,21 +262,20 @@ with col21:
 
     plot_rendimento_modalidade_noperacoes.update_layout(
         title_text='',
-        xaxis_title='',
-        yaxis_title='Número de operações',
         template="seaborn",
         legend=dict(
             x=0.5,
-            y=-0.3,
+            y=-0.2,
             orientation='h',
-            xanchor='center'
+            xanchor='center',
+            traceorder='normal',
         ),
-        xaxis=dict(showgrid=False),
-        yaxis=dict(showgrid=False),
+        xaxis=dict(showgrid=False, title = 'Ano'),
+        yaxis=dict(showgrid=False, title = 'Quantidade de operações'),
         margin=dict(t=0, b=0, l=0, r=0),
         dragmode=False
     )
-        
+            
     st.plotly_chart(plot_rendimento_modalidade_noperacoes, use_container_width=True)
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;margin-bottom: 20px;'>Inserindo dados macroeconômicos na análise</div>", unsafe_allow_html=True)
@@ -321,13 +317,13 @@ def create_figure(yaxis_column_name):
                                  line=dict(color='dimgray', width=2, dash='dot')))
 
     plot_juros_inflacao_modalidade.update_layout(
+        title_text='',
         yaxis2=dict(
             overlaying='y',
             side='right',
             showgrid=False,
             title="Endividamento de longo prazo"
         ),
-        legend_title_text='modalidades',
         template="seaborn",
         legend=dict(
             x=0.5,
@@ -336,17 +332,14 @@ def create_figure(yaxis_column_name):
             xanchor='center',
             traceorder='normal',
             yanchor='top',
-            font=dict(
-            size=12
-            )
-        ),
-        xaxis=dict(showgrid=False),
+            title = 'modalidades'
+            ),
+        xaxis=dict(showgrid=False, title = 'Ano'),
         yaxis=dict(
             showgrid=False,
             title=yaxis_column_name
         ),
         margin=dict(t=0, l=0, r=0, b=0),
-        showlegend = True,
         dragmode=False
     )
         
@@ -357,7 +350,7 @@ option = st.selectbox(
         ('IPCA', 'Taxa média mensal de juros - PF')
     )
     
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Distribuição do endividamento com parcelas acima de 360 dias por modalidades de contratação</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Distribuição do endividamento com parcelas acima de 360 dias por modalidades de contratação</div>", unsafe_allow_html=True)
 
 st.plotly_chart(create_figure(option), use_container_width=True)
 
@@ -366,7 +359,7 @@ col30, col31 = st.columns((2))
 
 with col30:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com vencimento acima de 360 dias por faixa de renda em comparação à taxa de desocupação</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Endividamento com vencimento acima de 360 dias por faixa de renda em comparação à taxa de desocupação</div>", unsafe_allow_html=True)
     
  
     @st.cache_data()
@@ -423,6 +416,7 @@ with col30:
     )
 
     plot_desemprego_divida_lp_filtrado.update_layout(
+        title_text='',
         yaxis2=dict(
             overlaying='y',
             side='right',
@@ -430,30 +424,29 @@ with col30:
             title="Endividamento de longo prazo"
         ),
         template="seaborn",
-        legend_title_text='categorias de renda',
         legend=dict(
             x=0.5,  
             y=-0.2,
             traceorder='normal',
             orientation='h',
             xanchor='center',  
-            yanchor='top'      
+            yanchor='top',
+            title='categorias de renda'
         ),  
-        xaxis=dict(showgrid=False),
+        xaxis=dict(showgrid=False, title = 'Ano'),
         yaxis=dict(
             showgrid=False,
             title="Taxa de desocupação"
         ),
-        showlegend = True,
         margin=dict(t=0, b=0, l=0, r=0),
         dragmode=False
     )
-
+    
     st.plotly_chart(plot_desemprego_divida_lp_filtrado, use_container_width=True)
     
 with col31:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Correlação entre indicadores macroeconômicos e as parcelas do endividamento total e parcelas com pouca expectativa de pagamento</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Correlação entre indicadores macroeconômicos e as parcelas do endividamento total e parcelas com pouca expectativa de pagamento</div>", unsafe_allow_html=True)
     
 
     @st.cache_data()
@@ -490,7 +483,7 @@ with col31:
         for j, value in enumerate(row):
             if not np.isnan(value):  
                 fig.add_annotation(dict(
-                    font=dict(color="black", size=10),
+                    font=dict(size=10),
                     x=corr.columns[j],
                     y=corr.index[i],
                     showarrow=False,
@@ -507,7 +500,7 @@ with col31:
     
     st.plotly_chart(fig, use_container_width=True)
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Endividamento com prazo de vencimento acima de 360 dias em comparação ao índice de preços ao consumidor amplo (inflação)</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Endividamento com prazo de vencimento acima de 360 dias em comparação ao índice de preços ao consumidor amplo (inflação)</div>", unsafe_allow_html=True)
 
 @st.cache_data()
 def load_pf_porte_endividamentolp_inflacao():
@@ -543,6 +536,7 @@ plot_pf_porte_endividamentolp_inflacao.add_trace(go.Scatter(
 ))
 
 plot_pf_porte_endividamentolp_inflacao.update_layout(
+    title='',
     yaxis=dict(
         title="IPCA",
         showgrid=False
@@ -555,7 +549,7 @@ plot_pf_porte_endividamentolp_inflacao.update_layout(
     ),
     xaxis=dict(
         showgrid=False,
-        dtick="M24"
+        title='Ano'
     ),
     legend=dict(
         x=0.5,
@@ -564,17 +558,15 @@ plot_pf_porte_endividamentolp_inflacao.update_layout(
         orientation='h',
         xanchor='center',
         yanchor='top',
-        font=dict(size=12)
+        title='faixa de renda'
     ),
     template="seaborn",
-    showlegend = True,
-    legend_title_text='modalidade',
     dragmode=False
 )
-
+    
 st.plotly_chart(plot_pf_porte_endividamentolp_inflacao, use_container_width=True)
 
-#Mapa endividamento PF e PJ
+#PESSOAS JURÍDICAS
 st.subheader('Como as empresas andam se financiando?')
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;'>Distribuição dos ativos problemáticos das empresas brasileiras, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
@@ -594,14 +586,15 @@ df_corr_ibge_scr_pj = load_df_corr_ibge_scr_pj()
 
 cnae_secao = st.selectbox(
         'Para qual setor de atuação você deseja visualizar?',
-        df_corr_ibge_scr_pj['cnae_secao'].unique()
+        df_corr_ibge_scr_pj['cnae_secao'].unique(), 
+        index=14
     )
     
 col5, col6 = st.columns((2))
 
 with col5:
 
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Dispersão entre os ativos problemáticos e a saída das empresas que pertencem ao setor de atuação selecionado</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Dispersão entre os ativos problemáticos e a saída das empresas que pertencem ao setor de atuação selecionado</div>", unsafe_allow_html=True)
     
     df_corr_ibge_scr_pj_filtered = df_corr_ibge_scr_pj[df_corr_ibge_scr_pj['cnae_secao'] == cnae_secao]
 
@@ -609,20 +602,20 @@ with col5:
     
     plot_corr_ibge_scr_pj.update_layout(showlegend=False,
                                        title='',
-                                        margin=dict(t=0, l=0, r=0, b=0),
-                                        template = "seaborn",
-                                       xaxis_title='Ativo problemático',
-                                       xaxis=dict(showgrid=False),
+                                       margin=dict(t=0, l=0, r=0, b=0),
+                                       template = "seaborn",
+                                       xaxis=dict(showgrid=False, title = 'Ativo problemático'), 
+                                       yaxis=dict(showgrid=False, title='Qtde. empresas saíram da atividade/Total'),
                                        dragmode=False)
     
     plot_corr_ibge_scr_pj.update_yaxes(showgrid=False)
     
     st.plotly_chart(plot_corr_ibge_scr_pj, use_container_width=True)
-
+    
 
 with col6:
     
-    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Estados federativos em que estão localizadas as empresas tomadoras de crédito com parcelas classificadas como ativo problemático que pertencem ao setor de atuação selecionado</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Estados em que estão localizadas as empresas tomadoras de crédito com parcelas classificadas como ativo problemático que pertencem ao setor de atuação selecionado</div>", unsafe_allow_html=True)
     
     @st.cache_data()
     def load_df_cnae_pj_ativoproblematico():
@@ -637,14 +630,14 @@ with col6:
                                geojson=geojson_data, 
                                locations='Estado', 
                                color='ativo_problematico/pop',
-                               color_continuous_scale="sunsetdark",
+                               color_continuous_scale="YlOrRd",
                                range_color=(0, max(df_cnae_pj_ativoproblematico_filtered['ativo_problematico/pop'])),
                                animation_frame='ano', 
                                mapbox_style="open-street-map",
-                               zoom=1.9, 
-                               center={"lat": -17.14, "lon": -57.33},
+                               zoom=2, 
+                               center={"lat": -15, "lon": -57.33},
                                opacity=1,
-                               labels={'ativo_problematico/pop':'Ativo problemático',
+                               labels={'ativo_problematico/pop':'Ativo problemático/População',
                                        'uf': 'Unidade da Federação do Brasil'},
                                featureidkey="properties.NM_ESTADO")
     
@@ -656,13 +649,11 @@ with col6:
         xanchor='center',
         x=0.5,   
         orientation='h',  
-        title="ativo problemático/população",
+        title="Ativo problemático/População",
         titleside = "bottom"
     ),
-        margin=dict(t=0, b=0, l=0, r=0),
-        dragmode='select'
+        margin=dict(t=0, b=0, l=0, r=0)
 )
-
     
     st.plotly_chart(plot_cnae_pj_ativoproblematico,use_container_width=True)
 
@@ -674,7 +665,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Modalidades de crédito contratadas pelas micro e pequenas empresas com parcelas cujo vencimento é inferior a 360 dias</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Modalidades de crédito contratadas pelas micro e pequenas empresas com parcelas cujo vencimento é inferior a 360 dias</div>", unsafe_allow_html=True)
 
 @st.cache_data()
 def load_pj_porte_modalidade_endividamentocp():
@@ -690,28 +681,32 @@ pj_porte_modalidade_endividamentocp_filtrado = pj_porte_modalidade_endividamento
 plot_pj_porte_modalidade_endividamentocp = px.line(pj_porte_modalidade_endividamentocp_filtrado, 
              x='data_base', 
              y='curto_prazo_deflacionado',
-              color = 'modalidade',
+             color = 'modalidade',
              facet_col='porte',
              title='',
              labels={'data_base': '', 'curto_prazo_deflacionado': 'Endividamento de curto prazo'},
-             template="seaborn",
              category_orders={"porte": ["Empresa de pequeno porte", "Microempresa"]})
 
 plot_pj_porte_modalidade_endividamentocp.update_layout(
-    yaxis_title="Endividamento de curto prazo",
-    legend_title_text='modalidade',
-    legend=dict(x=0.5, y=-0.17, xanchor='center', yanchor='top', orientation = 'h'),
-    xaxis=dict(dtick="M12"),
-    xaxis2=dict(dtick="M12"),
+    title='',
+    legend=dict(x=0.5, 
+                y=-0.2, 
+                xanchor='center', 
+                yanchor='top', 
+                orientation = 'h',
+                traceorder='normal',),
+    xaxis=dict(title="Anos"),
+    xaxis2=dict(title="Anos"),
     dragmode=False,
-    yaxis=dict(showgrid=False)
+    yaxis=dict(showgrid=False),
+    template="seaborn",
 )
 
 plot_pj_porte_modalidade_endividamentocp.update_yaxes(showgrid=False)
 
 st.plotly_chart(plot_pj_porte_modalidade_endividamentocp, use_container_width=True)
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Micro e pequenas empresas: endividamento para capital de giro versus ativo problemático, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Micro e pequenas empresas: endividamento para capital de giro versus ativo problemático, em que há pouca expectativa de pagamento</div>", unsafe_allow_html=True)
 
 df_micro_peq_problematico = pd.read_csv("df_micro_peq_problematico.csv", encoding="UTF-8", delimiter=',', decimal='.')
 
@@ -733,13 +728,18 @@ plot_micro_peq_problematico = px.bar(df_micro_peq_problematico,
 
 plot_micro_peq_problematico.update_layout(
     barmode='group',
-    yaxis_title="Endividamento de curto prazo e ativo problemático, em que há pouca expectativa de pagamento",
     legend_title_text='tipo de endividamento',
-    legend=dict(x=0.5, y=-0.15, xanchor='center', yanchor='top', orientation = 'h'),
-        xaxis=dict(dtick="M12"),
-        xaxis2=dict(dtick="M12"),
+    legend=dict(x=0.5, 
+                y=-0.2, 
+                xanchor='center', 
+                yanchor='top', 
+                orientation = 'h',
+                traceorder='normal',
+                title= 'tipo de parcela de crédito'),
+    xaxis=dict(),
+    xaxis2=dict(),
     dragmode=False,
-    yaxis=dict(showgrid=False)
+    yaxis=dict(showgrid=False, title="Endividamento para capital de giro <br> e ativo problemático")
 )
 
 plot_micro_peq_problematico.update_yaxes(showgrid=False)
@@ -754,7 +754,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;'>Distribuição do endividamento nas principais áreas de atuação das empresas do setor de agricultura, pecuária, produção florestal, pesca e aquicultura em dezembro-2022</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; color: #888888; font-size: 0.9em;margin-bottom: 20px;margin-top: 20px;'>Distribuição do endividamento nas principais áreas de atuação das empresas do setor de agricultura, pecuária, produção florestal, pesca e aquicultura em dezembro-2022</div>", unsafe_allow_html=True)
 
 
 @st.cache_data()
