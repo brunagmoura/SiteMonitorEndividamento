@@ -42,7 +42,7 @@ st.title(":bar_chart: Monitor do endividamento dos brasileiros")
 link = "https://sobremonitordoendividamento.readthedocs.io"
 
 st.info(f'Para facilitar a sua análise, todos os valores já estão deflacionados!\n\n'
-        f'Quer conferir mais detalhes sobre este projeto ou entrar em contato conosco? clique [aqui]({link})',
+        f'Quer conferir mais detalhes sobre este projeto ou entrar em contato conosco? Clique [aqui]({link})',
         icon="👩‍💻")
 
 #Fazer o filtro
