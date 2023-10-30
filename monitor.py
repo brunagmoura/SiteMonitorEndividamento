@@ -39,8 +39,10 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 
 st.title(":bar_chart: Monitor do endividamento dos brasileiros")
 
-st.info('Para facilitar a sua análise, todos os valores já estão deflacionados!\n\n'
-        'Clique em "sobre" no canto superior direito da tela para conferir mais detalhes sobre este projeto', 
+link = "https://sobremonitordoendividamento.readthedocs.io"
+
+st.info(f'Para facilitar a sua análise, todos os valores já estão deflacionados!\n\n'
+        f'Quer conferir mais detalhes sobre este projeto ou entrar em contato conosco? clique [aqui]({link})',
         icon="👩‍💻")
 
 #Fazer o filtro
@@ -592,7 +594,16 @@ x=corr.columns,
 y=corr.index,
 zmin=-1, 
 zmax=1, 
-showscale=True))
+showscale=True,
+colorbar=dict(
+    orientation='h',
+    x=0.5, 
+    y=-0.2, 
+    xanchor='center',
+    yanchor='bottom',
+    len=0.75,
+    thickness=15
+    )))
 
 for i, row in enumerate(corr_masked.to_numpy()):
     for j, value in enumerate(row):
@@ -609,13 +620,12 @@ for i, row in enumerate(corr_masked.to_numpy()):
 fig.update_xaxes(side="top", tickangle=360, showgrid=False)
 fig.update_yaxes(side="left", tickangle=0, showgrid=False)
 
-fig.update_layout(margin=dict(t=0, b=0, l=0, r=0),
+fig.update_layout(margin=dict(t=0, b=50, l=0, r=0),
 template = "seaborn",
-dragmode=False)
+dragmode=False
+)
 
 st.plotly_chart(fig, use_container_width=True)
-
-
 
 #PESSOAS JURÍDICAS
 st.subheader('Como está o endividamento das empresas brasileiras?')
@@ -843,13 +853,13 @@ plot_pj_cnaesecao_cnaesubclasse_endividamento.update_traces(textinfo='label+perc
 
 st.plotly_chart(plot_pj_cnaesecao_cnaesubclasse_endividamento,use_container_width=True)
 
-st.subheader("Como o endividamento dos brasileiros vem sendo tratado pelos legisladores?")
+st.subheader("Endividamento em pauta no Congresso Nacional")
 
 st.markdown("<div style='text-align: center; color: #555555; font-size: 1.3em;margin-bottom: 20px;'>Proposições legislativas que se referem à endividamento com tramitação nos últimos 180 dias</div>", unsafe_allow_html=True)
 
 st.markdown("""
 <div style='text-align: left; color: #666666; font-size: 1em; background-color: #f0f0f0; padding: 10px; border-radius: 5px;margin-bottom: 20px;'>
-    💡&nbsp;&nbsp;&nbsp;A busca utiliza a API da Câmara dos Deputados, módulo proposições, e se refere aos projetos de lei e medidas provisórias que tenham como palavras-chave termos relacionados ao endividamento da população brasileira.e....., que são texto texto texto texto........ texto texto texto........ texto texto texto .... texto texto texto texto texto texto texto texto texto  texto texto texto  texto texto texto  texto texto texto
+    💡&nbsp;&nbsp;&nbsp;A busca utiliza a base de dados da Câmara dos Deputados e se refere aos projetos de lei e medidas provisórias que tenham como palavras-chave termos relacionados ao endividamento da população e das empresas brasileiras. Os resultados são atualizados em tempo real.
 </div>
 """, unsafe_allow_html=True)
 
@@ -955,7 +965,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     with st.container():
         # Filtro para o Tipo
         selected_tipo = st.multiselect(
-            "Filter Tipo",
+            "Tipo de proposição",
             df['Tipo'].unique(),
             default=st.session_state.filter_tipo
         )
@@ -963,7 +973,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         # Filtro para o Ano
         _min, _max = int(df['Ano'].min()), int(df['Ano'].max())
         selected_ano = st.slider(
-            "Filter Ano",
+            "Ano",
             min_value=_min,
             max_value=_max,
             value=st.session_state.filter_ano,
@@ -972,7 +982,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
         # Filtro para a Situação
         selected_situacao = st.multiselect(
-            "Filter Situação",
+            "Situação",
             df['Situação'].unique(),
             default=st.session_state.filter_situacao
         )
