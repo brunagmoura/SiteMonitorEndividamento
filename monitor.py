@@ -592,7 +592,7 @@ for i, row in enumerate(corr_masked.to_numpy()):
     for j, value in enumerate(row):
         if not np.isnan(value):  
             fig.add_annotation(dict(
-                font=dict(size=10),
+                font=dict(size=15),
                 x=corr.columns[j],
                 y=corr.index[i],
                 showarrow=False,
