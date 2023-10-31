@@ -16,8 +16,11 @@ from datetime import datetime as dt, timedelta
 
 warnings.filterwarnings('ignore')
 
+link = "https://sobre-monitor.readthedocs.io/en/latest/"
+
 st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="collapsed", 
-                   menu_items={'About': "Teste"})
+                   menu_items={'About': f'Para facilitar a sua análise, todos os valores já estão deflacionados!\n\n'
+        f'Quer conferir mais detalhes sobre este projeto ou entrar em contato conosco? [Clique aqui]({link})'})
 
 
 #Desabilitar o hover no celular
@@ -39,10 +42,8 @@ st.set_page_config(page_title="Monitor endividamento", page_icon=":bar_chart:", 
 
 st.title(":bar_chart: Monitor do endividamento dos brasileiros")
 
-link = "https://sobremonitordoendividamento.readthedocs.io"
-
 st.info(f'Para facilitar a sua análise, todos os valores já estão deflacionados!\n\n'
-        f'Quer conferir mais detalhes sobre este projeto ou entrar em contato conosco? Clique [aqui]({link})',
+        f'Quer conferir mais detalhes sobre este projeto ou entrar em contato conosco? [Clique aqui]({link})',
         icon="👩‍💻")
 
 #Fazer o filtro
