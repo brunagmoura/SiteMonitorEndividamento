@@ -953,6 +953,8 @@ df = create_dataframe(projetos, token)
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     # Inicializar os estados dos filtros apenas uma vez
     if 'filter_initialized' not in st.session_state:
+        # Tratar NaN na coluna "Ano"
+        df['Ano'] = df['Ano'].fillna(0)  # Substitui NaN por 0
         st.session_state.filter_tipo = df['Tipo'].unique().tolist()
         st.session_state.filter_ano = (int(df['Ano'].min()), int(df['Ano'].max()))
         st.session_state.filter_situacao = df['Situação'].unique().tolist()
