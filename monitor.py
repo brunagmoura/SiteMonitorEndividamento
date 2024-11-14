@@ -927,23 +927,23 @@ data_inicio = (datetime.datetime.now() - datetime.timedelta(days=180)).strftime(
 data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
 palavras_chave = [ 
 "superendividamento",
-"inadimplimento das obrigações", 
-"mínimo existencial",   
-"repactuação de dívidas",
-"taxa de juros"
-"crédito ao consumidor",
-"parcelamento de dívidas",
-"renegociação de dívidas"
-"rotativo"
-"cartão de crédito",
-"crédito rural",
-"crédito habitacional",
-"empréstimo consignado"
-"capital de giro",
-"crédito para investimento",
-"sistemas de informação de crédito",
-"ativo problemático",
-"crédito a vencer"
+    "inadimplimento das obrigações", 
+    "mínimo existencial",   
+    "repactuação de dívidas",
+    "taxa de juros",
+    "crédito ao consumidor",
+    "parcelamento de dívidas",
+    "renegociação de dívidas",
+    "rotativo",
+    "cartão de crédito",
+    "crédito rural",
+    "crédito habitacional",
+    "empréstimo consignado",
+    "capital de giro",
+    "crédito para investimento",
+    "sistemas de informação de crédito",
+    "ativo problemático",
+    "crédito a vencer"
 ]
 
 projetos = fetch_projetos(data_inicio, data_fim, palavras_chave)
