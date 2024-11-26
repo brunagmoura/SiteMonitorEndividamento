@@ -915,7 +915,8 @@ def create_dataframe(projetos, token):
     df = pd.DataFrame(projetos, columns=colunas)
     df['situacaoTramitacao'] = df['situacaoTramitacao'].astype('str')
     df['situacaoTramitacao'] = df['situacaoTramitacao'].replace(to_replace='None', value='Não informado')
-    
+
+    df['ano'] = pd.to_numeric(df['ano'], errors='coerce').fillna(0).astype(int)
     df['ano'] = df['ano'].astype('int')
     df['numero'] = df['numero'].astype('int')
 
