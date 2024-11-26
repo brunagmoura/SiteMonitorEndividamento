@@ -923,6 +923,8 @@ def create_dataframe(projetos, token):
     df.columns = ["Tipo", "Número", "Ano", "Ementa", "Situação"]
     return df
 
+    print("Colunas do DataFrame:", df.columns.tolist())
+
 token = "seu_token_de_acesso_aqui"
 data_inicio = (datetime.datetime.now() - datetime.timedelta(days=180)).strftime("%Y-%m-%d")
 data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
