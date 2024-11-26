@@ -873,7 +873,7 @@ def fetch_projetos(data_inicio, data_fim, palavras_chave):
         "dataInicio": data_inicio,
         "dataFim": data_fim,
         "ordenarPor": "id",
-        "itens": 100,
+        "itens": 100, 
         "pagina": 1,
         "siglaTipo": ["PL", "PLP", "MPV"],
         "keywords": palavras_chave
@@ -883,57 +883,60 @@ def fetch_projetos(data_inicio, data_fim, palavras_chave):
     while True:
         response = requests.get(url, params=params)
         if response.status_code == 200:
-            dados = response.json()["dados"]
+            dados = response.json().get("dados", [])  # Corrigido
             if len(dados) == 0:
                 break
             projetos.extend(dados)
             params["pagina"] += 1
+            time.sleep(5)  # Mantém um intervalo de 5 segundos entre as requisições
         else:
-            print("Erro ao fazer requisição para a API:", response.status_code)
+            st.error(f"Erro ao fazer requisição para a API de projetos: {response.status_code}")
+            st.error(f"Mensagem de erro: {response.text}")
             break
     return projetos
 
+# Função para buscar tramitações
 @st.cache_data(ttl=3600)
-def fetch_tramitacoes(id_proposicao, token):
+def fetch_tramitacoes(id_proposicao):
     url_tramitacoes = f"https://dadosabertos.camara.leg.br/api/v2/proposicoes/{id_proposicao}/tramitacoes"
-    response_tramitacoes = requests.get(url_tramitacoes, headers={"Authorization": f"Bearer {token}"})
+    response_tramitacoes = requests.get(url_tramitacoes)
+
     if response_tramitacoes.status_code == 200:
-        tramitacoes = response_tramitacoes.json()['dados']
+        tramitacoes = response_tramitacoes.json().get('dados', [])
         ultima_tramitacao = tramitacoes[-1] if tramitacoes else None
-        return ultima_tramitacao['descricaoSituacao'] if ultima_tramitacao else "Sem tramitações"
+        return ultima_tramitacao.get('descricaoSituacao', "Sem tramitações") if ultima_tramitacao else "Sem tramitações"
     else:
-        print(f"Erro ao obter as tramitações da proposição {id_proposicao}: {response_tramitacoes.status_code}")
+        st.error(f"Erro ao obter tramitações para ID {id_proposicao}: {response_tramitacoes.status_code}")
+        st.error(f"Mensagem: {response_tramitacoes.text}")
         return "Erro na tramitação"
 
-def create_dataframe(projetos, token):
+# Função para criar o DataFrame
+def create_dataframe(projetos):
+    projetos_completos = []
     for proposicao in projetos:
         id_proposicao = proposicao['id']
-        situacao_tramitacao = fetch_tramitacoes(id_proposicao, token)
+        situacao_tramitacao = fetch_tramitacoes(id_proposicao)
         proposicao['situacaoTramitacao'] = situacao_tramitacao
+        projetos_completos.append(proposicao)
 
-    colunas = ['siglaTipo', 'numero', 'ano', 'ementa', 'situacaoTramitacao']
-    df = pd.DataFrame(projetos, columns=colunas)
-    df['situacaoTramitacao'] = df['situacaoTramitacao'].astype('str')
-    df['situacaoTramitacao'] = df['situacaoTramitacao'].replace(to_replace='None', value='Não informado')
+    # Criação do DataFrame
+    colunas = ['id', 'siglaTipo', 'numero', 'ano', 'ementa', 'situacaoTramitacao']
+    df = pd.DataFrame(projetos_completos, columns=colunas)
 
+    # Ajuste das colunas para exibição amigável
     df['ano'] = pd.to_numeric(df['ano'], errors='coerce').fillna(0).astype(int)
-    df['ano'] = df['ano'].astype('int')
-    df['numero'] = df['numero'].astype('int')
+    df['numero'] = pd.to_numeric(df['numero'], errors='coerce').fillna(0).astype(int)
+    df['situacaoTramitacao'] = df['situacaoTramitacao'].astype(str)
+    df.columns = ["ID", "Tipo", "Número", "Ano", "Ementa", "Situação"]
 
-    df.columns = ["Tipo", "Número", "Ano", "Ementa", "Situação"]
     return df
 
-    print("Colunas do DataFrame:", df.columns.tolist())
-
-token = "seu_token_de_acesso_aqui"
-data_inicio = (datetime.datetime.now() - datetime.timedelta(days=180)).strftime("%Y-%m-%d")
+# Parâmetros e execução
+data_inicio = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
 data_fim = datetime.datetime.now().strftime("%Y-%m-%d")
-palavras_chave = [ 
-"superendividamento",
-    "inadimplimento das obrigações", 
-    "mínimo existencial",   
-    "repactuação de dívidas",
-    "taxa de juros",
+palavras_chave = [
+    "superendividamento",
+    "mínimo existencial",
     "crédito ao consumidor",
     "parcelamento de dívidas",
     "renegociação de dívidas",
@@ -943,15 +946,12 @@ palavras_chave = [
     "crédito habitacional",
     "empréstimo consignado",
     "capital de giro",
-    "crédito para investimento",
-    "sistemas de informação de crédito",
-    "ativo problemático",
-    "crédito a vencer"
+    "taxa de juros"
 ]
 
 projetos = fetch_projetos(data_inicio, data_fim, palavras_chave)
 
-df = create_dataframe(projetos, token)
+df = create_dataframe(projetos)
 
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     # Inicializar os estados dos filtros apenas uma vez
